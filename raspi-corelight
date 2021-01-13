@@ -2,7 +2,9 @@
 
 corelightCfgVer="2.0"
 corelight="corelight-softsensor"
-installPath="/usr/bin"
+corelightAtHome="raspi-corelight"
+gitRepo="https://maestro.corelight.io/success/raspi-corelight.git"
+installPath="/opt/raspi-corelight"
 logo="Corelight@Home Software Sensor Menu"
 licenseFile="/etc/corelight-license.txt"
 corelightCfg="/etc/corelight-softsensor.conf"
@@ -217,6 +219,37 @@ corelightStatus () {
     echo "Corelight Service:" `sensorStatus | colorize`
     echo
     echo
+}
+
+updateAtHome () {
+	if [ -x $installPath/$corelightAtHome ]; then
+		echo [Checking Corelight@Home github...]
+		cd $installPath
+		sudo git pull
+		if [ $? -eq 0 ]; then
+			echo pulled
+			pressEnter
+		else
+			echo did not pull
+			pressEnter
+		fi
+	else
+		echo [Initial CorelightAtHome install...]
+		sudo git clone $gitRepo $installPath
+		if [ $? -eq 0 ]; then
+			sudo chmod 755 $installPath/$corelightAtHome
+			sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
+			echo [Installed Corelight@Home to $installPath ]
+			echo [Created symbolic link to /usr/bin/$corelightAtHome ]
+			echo [Restarting Corelight@Home Menu...]
+			pressEnter
+			/usr/bin/$corelightAtHome
+			exit 0
+		else
+			echo [git clone for $corelightAtHome failed]
+		fi
+	fi
+
 }
 
 wanIP () {
