@@ -1,4 +1,6 @@
 #!/bin/bash
+# source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/main/raspi-corelight)
+
 
 corelightCfgVer="2.0"
 corelight="corelight-softsensor"
@@ -247,6 +249,7 @@ updateAtHome () {
 			exit 0
 		else
 			echo [git clone for $corelightAtHome failed]
+			pressEnter
 		fi
 	fi
 
