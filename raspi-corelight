@@ -228,8 +228,8 @@ updateAtHome () {
 		echo "[Checking Corelight@Home github...]"
 		cd $installPath
 		if sudo git pull; then
-			    echo "[git update completed]"
-                wait 4 && /usr/bin/$corelightAtHome
+			    echo "[git update completed]"; sleep 3
+                /usr/bin/$corelightAtHome
                 exit 0
           else
 			   echo "[ERROR during Corelight@Home update]" | colorize
@@ -242,11 +242,11 @@ updateAtHome () {
                 sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
                 echo "[Installed Corelight@Home to $installPath ]"
                 echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
-                echo "[Restarting Corelight@Home Menu...]"; wait 3
+                echo "[Restarting Corelight@Home Menu...]"; sleep 3
                 /usr/bin/$corelightAtHome
                 exit 0
             else
-			    echo "[git clone for $corelightAtHome failed]" | colorize
+			    echo "[ERROR git clone for $corelightAtHome failed]" | colorize
 			    pressEnter
 		fi
 	fi
