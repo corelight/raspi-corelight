@@ -228,7 +228,7 @@ updateAtHome () {
 		echo "[Checking Corelight@Home github...]"
 		cd $installPath
 		if sudo git pull; then
-			    pressEnter
+			    echo "[git update completed]"; wait 3
                 /usr/bin/$corelightAtHome
                 exit 0
           else
@@ -242,8 +242,7 @@ updateAtHome () {
                 sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
                 echo "[Installed Corelight@Home to $installPath ]"
                 echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
-                echo "[Restarting Corelight@Home Menu...]"
-                pressEnter
+                echo "[Restarting Corelight@Home Menu...]"; wait 3
                 /usr/bin/$corelightAtHome
                 exit 0
             else
