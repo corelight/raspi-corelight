@@ -237,19 +237,18 @@ updateAtHome () {
 		fi
 	else
 		echo [Initial CorelightAtHome install...]
-		sudo git clone $gitRepo $installPath
-		if [ $? -eq 0 ]; then
-			sudo chmod 755 $installPath/$corelightAtHome
-			sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
-			echo "[Installed Corelight@Home to $installPath ]"
-			echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
-			echo "[Restarting Corelight@Home Menu...]"
-			pressEnter
-			/usr/bin/$corelightAtHome
-			exit 0
-		else
-			echo "[git clone for $corelightAtHome failed]"
-			pressEnter
+		if sudo git clone $gitRepo $installPath ; then
+        		sudo chmod 755 $installPath/$corelightAtHome
+                sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
+                echo "[Installed Corelight@Home to $installPath ]"
+                echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
+                echo "[Restarting Corelight@Home Menu...]"
+                pressEnter
+                /usr/bin/$corelightAtHome
+                exit 0
+            else
+			    echo "[git clone for $corelightAtHome failed]" | colorize
+			    pressEnter
 		fi
 	fi
 
