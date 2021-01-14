@@ -176,8 +176,6 @@ sensorVersion=$corelight -v
 # Auto Update info
 sysAutoUpdateStat=$(systemctl is-active apt-daily-upgrade.timer | colorize)
 sysAutoUpdateEnabledStat=$(systemctl is-enabled apt-daily-upgrade.timer | colorize)
-# Grab sysAutoUpdateConfig variable
-getAutoUpdateConfig
 
 # System info
 timezoneStat=$(timedatectl | grep "Time zone:" | cut -f 2 -d ":")
