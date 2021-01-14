@@ -227,13 +227,12 @@ updateAtHome () {
 	if [ -x $installPath/$corelightAtHome ]; then
 		echo [Checking Corelight@Home github...]
 		cd $installPath
-		sudo git pull
-		if [ $? -eq 0 ]; then
-			echo pulled
-			pressEnter
-		else
-			echo did not pull
-			pressEnter
+		if sudo git pull; then
+			   echo pulled
+			   pressEnter
+		  else
+			   echo did not pull
+			   pressEnter
 		fi
 	else
 		echo [Initial CorelightAtHome install...]
