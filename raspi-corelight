@@ -163,9 +163,9 @@ else
 fi
 
 # Network info
-myIpStat=$(ip -4 addr list "$mgtInterface" | grep inet | cut -f 6 -d " ")
+myIpStat=$(ip -4 addr list wlan0 | grep inet | cut -f 6 -d " ")
 srcIp=$(echo $myIpStat | cut -f 1 -d "/")
-myGatewayStat=$(ip route | grep default | grep "$mgtInterface" | cut -f 3 -d " ")
+myGatewayStat=$(ip route | grep default | grep wlan0 | cut -f 3 -d " ")
 myDnsStat=$(grep ^nameserver /etc/resolv.conf | cut -f 2 -d  " ")
 
 # Sensor info
@@ -174,8 +174,8 @@ sensorEnabledStat=$(systemctl is-enabled $corelight | colorize)
 sensorVersion=$corelight -v
 
 # Auto Update info
-sysAutoUpdateStat=$(systemctl is-active yum-cron | colorize)
-sysAutoUpdateEnabledStat=$(systemctl is-enabled yum-cron | colorize)
+sysAutoUpdateStat=$(systemctl is-active apt-daily-upgrade.timer | colorize)
+sysAutoUpdateEnabledStat=$(systemctl is-enabled apt-daily-upgrade.timer | colorize)
 # Grab sysAutoUpdateConfig variable
 getAutoUpdateConfig
 
