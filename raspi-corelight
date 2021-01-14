@@ -228,7 +228,7 @@ updateAtHome () {
 		echo "[Checking Corelight@Home github...]"
 		cd $installPath
 		if sudo git pull; then
-			    echo "[git update completed]"; wait 3
+			    echo "[git update completed]"; wait 10
                 /usr/bin/$corelightAtHome
                 exit 0
           else
