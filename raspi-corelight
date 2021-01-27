@@ -10,7 +10,7 @@ installPath="/opt/raspi-corelight"
 logo="Corelight@Home Software Sensor Menu"
 licenseFile="/etc/corelight-license.txt"
 corelightCfg="/etc/corelight-softsensor.conf"
-sshdStatus=`sudo systemctl status ssh | grep Active: | cut -f2 -d: | colorize`
+#sshdStatus=`sudo systemctl status ssh | grep Active: | cut -f2 -d: | colorize`
 editor="nano"
 #wanIP=`host myip.opendns.com resolver1.opendns.com | grep "myip.opendns.com has" | awk '{print $4}'`
 
@@ -221,6 +221,70 @@ corelightStatus () {
     echo
 }
 
+initial_run () {
+	platform=`cat /etc/os-release | grep "ID=raspbian" | cut -d"=" -f2`
+	if ! [ $platform = raspbian ] ; then
+		echo "[ALERT] This script was written for raspbianOS"
+		echo "###!!! Load Raspbian and try this again.   !!!###"
+		echo "###!!! Going to exit from the script now.  !!!###"
+		echo "[Press Enter]" ; read DUMMY ;
+		exit
+	fi
+#
+# Migrate to new Version of Corelight SoftSenor
+	migrateCorelight=`sudo dpkg -s corelight | grep Status | awk '{print $4}'`
+	if [ "$migrateCorelight" = "installed" ]; then
+	   migrate;
+	fi
+#
+# Launch menu if everything checks out
+AARCH64=`uname -a | awk '{print $13}'`
+if [ "$AARCH64" = "aarch64" ] ; then
+	main_menu
+else
+	while true
+	do
+		clear ;
+		echo "#####################################################";
+		echo "# It appears this is the first time you have ran    #";
+	       	echo "# this script and we have detected that this device #";
+       		echo "# needs to upgrade the kernel to 64bit and modify   #";
+		echo "# the repos accordingly.                            #";
+		echo "#                                                   @";
+		echo "# This will require a reboot after upgrade and then #";
+		echo "# installation of the Corelight Software Sensor can #";
+		echo "# proceed.                                          #";
+		echo "#                                                   #";
+		echo "# !!!This process requires internet access!!!       #";
+		echo "#####################################################";
+		echo "" ;
+		echo $MSG ;
+		echo "" ;
+		ANSWER="0" ;
+		echo "[Proceed (y/n)]" | colorize --green; read ANSWER ;
+		case $ANSWER in
+			n|N) echo "[You have selected [n]. Exiting...]" ; break ;;
+			y|Y) clear ; echo "[Making magic happen. Hold...]" ; fix64bitRaspian ;;
+			*)   badchoice ;;
+		esac
+	done
+fi
+}
+
+# fonction to install 64bit Raspbian kernel
+fix64bitRaspian () {
+	clear ; echo "[Adding arm64 architecture...]";
+	clear ; sudo rpi-update &&
+	echo "arm_64bit=1" | sudo tee -a /boot/config.txt &&
+	clear ; sudo dpkg --add-architecture arm64 ;
+	setupRepo ;
+	installCorelight ;
+	echo "[Success] Need to reboot. [Press Enter to reboot.]" ; read DUMMY ;
+	sudo reboot
+}
+
+
+# function to update Corelight@Home
 updateAtHome () {
 	if [ -x $installPath/$corelightAtHome ]; then
 		echo "[Checking Corelight@Home github...]"
@@ -236,7 +300,7 @@ updateAtHome () {
 	else
 		echo [Initial CorelightAtHome install...]
 		if sudo git clone $gitRepo $installPath ; then
-        		sudo chmod 755 $installPath/$corelightAtHome
+        	sudo chmod 755 $installPath/$corelightAtHome
                 sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
                 echo "[Installed Corelight@Home to $installPath ]"
                 echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
@@ -244,8 +308,8 @@ updateAtHome () {
                 /usr/bin/$corelightAtHome
                 exit 0
             else
-			    echo "[ERROR git clone for $corelightAtHome failed]" | colorize
-			    pressEnter
+	        echo "[ERROR git clone for $corelightAtHome failed]" | colorize
+	        pressEnter
 		fi
 	fi
 
