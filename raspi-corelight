@@ -221,7 +221,7 @@ corelightStatus () {
     echo
 }
 
-initial_run () {
+runCorelightAtHome () {
 	platform=`cat /etc/os-release | grep "ID=raspbian" | cut -d"=" -f2`
 	if ! [ $platform = raspbian ] ; then
 		echo "[ALERT] This script was written for raspbianOS"
@@ -240,7 +240,7 @@ initial_run () {
 # Launch menu if everything checks out
 AARCH64=`uname -a | awk '{print $13}'`
 if [ "$AARCH64" = "aarch64" ] ; then
-	main_menu
+	mainMenu
 else
 	while true
 	do
@@ -329,14 +329,17 @@ licensed () {
 	fi
 }
 
+# Display Corelight Sensor status
 sensorStatus () {
 	sudo systemctl status $corelight | grep "Active:" | cut -d: -f 2-;
 }
 
+# Restart Corelight Sensor
 sensorRestart () {
 	clear ; echo [Restarting Corelight...] ; sudo systemctl restart $corelight ; wait 4
 }
 
+# Stop Corelight Sensor
 sensorStop () {
 	clear ; echo [Stopping Corelight...] ; sudo systemctl stop $corelight ; wait 4
 }
@@ -948,4 +951,4 @@ maintainMenu () {
 
 
 # start the menu
-mainMenu
+runCorelightAtHome
