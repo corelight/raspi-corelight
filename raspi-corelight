@@ -365,12 +365,23 @@ healthCheck () {
 }
 
 defineSniff () {
-	INT_SNIFF=""
+	monitorInterface=""
 	echo "[Interface Lists:]" ;
 	echo `ifconfig -s | awk '{print $1}'` ;
-	echo "Define Interface for Corelight to monitor [eth0~2]:" ; read INT_SNIFF ;
-	INT_SNIFF=${INT_SNIFF:-eth0~2}
-	sudo sed -i -e "s/^\([^#]*\)Corelight::sniff.*/Corelight::sniff\t\t$INT_SNIFF/" $corelightCfg ;
+	echo "Define Interface for Corelight to monitor [eth0~2]:" ; read monitorInterface ;
+	monitorInterface=${monitorInterface:-eth0~2}
+    echo
+    echo "New monitor interface is: [$monitorInterface]"
+    echo
+    read -p "Accept Configuration (y/n): " acceptConfig
+    if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
+	    sudo sed -i -e "s/^\([^#]*\)Corelight::sniff.*/Corelight::sniff\t\t$monitorInterface/" $corelightCfg ;
+    else
+        echo
+        echo "Cancelling Configuration Change"
+        echo
+    fi    
+
 }
 
 installCorelight () {
