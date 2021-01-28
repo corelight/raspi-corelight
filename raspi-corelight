@@ -585,7 +585,7 @@ echo "Date and Time Configuration" | colorize --underline
 echo
 
 timedatectl
-echo "NTP Client is: (systemctl status ntp | grep "Active" | awk '{ print $2 }' | colorize)"
+echo "NTP Client is: `systemctl status ntp | grep "Active" | awk '{ print $2 }' | colorize`"
 pressEnter
 }
 
