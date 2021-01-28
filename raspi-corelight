@@ -178,7 +178,7 @@ sysAutoUpdateEnabledStat=$(systemctl is-enabled apt-daily-upgrade.timer | colori
 
 # System info
 timezoneStat=$(timedatectl | grep "Time zone:" | cut -f 2 -d ":")
-ntpEnabledStat=$(systemctl is-enabled ntp | colorize)
+ntpEnabledStat=$(systemctl status ntp | grep "Active" | awk '{ print $2 }' | colorize)
 currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " ")
 currentDomain=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f2- -d ".")
 fqdn=$(echo "$currentHostname.$currentDomain" | colorize --cyan)
