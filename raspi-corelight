@@ -178,7 +178,7 @@ sysAutoUpdateEnabledStat=$(systemctl is-enabled apt-daily-upgrade.timer | colori
 
 # System info
 timezoneStat=$(timedatectl | grep "Time zone:" | cut -f 2 -d ":")
-ntpEnabledStat=$(systemctl is-enabled ntpd | colorize)
+ntpEnabledStat=$(systemctl is-enabled ntp | colorize)
 currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " ")
 currentDomain=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f2- -d ".")
 fqdn=$(echo "$currentHostname.$currentDomain" | colorize --cyan)
@@ -277,6 +277,7 @@ fix64bitRaspian () {
 	echo "arm_64bit=1" | sudo tee -a /boot/config.txt &&
 	clear ; sudo dpkg --add-architecture arm64 ;
 	setupRepo ;
+    sudo apt -y install ntp
 	installCorelight ;
     updateAtHome ;
 	echo "[Success] Need to reboot. [Press Enter to reboot.]" ; read DUMMY ;
@@ -708,14 +709,15 @@ echo
 read -p "Accept Configuration (y/n): " acceptConfig
 
 if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-    sudo timedatectl set-ntp $1
+    sudo systemctl start ntp
+    echo "$selection complete."
+    echo
+fi
+if [[ "$acceptConfig" == "n" ]] || [[ "$acceptConfig" == "no" ]]; then
+    sudo systemctl stop ntp
     echo "$selection complete."
     echo
 
-else
-    echo
-    echo "Cancelling Configuration Change"
-    echo
 fi
 }
 
