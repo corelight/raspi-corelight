@@ -473,7 +473,7 @@ setupHumio () {
 	sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$HUMIO_HECURL/services/collector|" "$CORELIGHT_CONFIG";
 	sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$CORELIGHT_CONFIG";
 	sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tT|" "$CORELIGHT_CONFIG";
-	sensorRestart ;;
+	sensorRestart ;
 }
 setup_splunk () {
 	while true ;
