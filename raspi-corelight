@@ -279,6 +279,7 @@ fix64bitRaspian () {
 	clear ; sudo dpkg --add-architecture arm64 ;
 	setupRepo ;
 	installCorelight ;
+    updateAtHome ;
 	echo "[Success] Need to reboot. [Press Enter to reboot.]" ; read DUMMY ;
 	sudo reboot
 }
@@ -301,13 +302,12 @@ updateAtHome () {
 		echo [Initial CorelightAtHome install...]
 		if sudo git clone $gitRepo $installPath ; then
         	sudo chmod 755 $installPath/$corelightAtHome
-                sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
-                echo "[Installed Corelight@Home to $installPath ]"
-                echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
-                echo "[Restarting Corelight@Home Menu...]"; sleep 3
-                /usr/bin/$corelightAtHome
-                exit 0
-            else
+            sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
+            echo "[Installed Corelight@Home to $installPath ]"
+            echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
+            echo "[Restarting Corelight@Home Menu...]"; sleep 3
+            /usr/bin/$corelightAtHome
+        else
 	        echo "[ERROR git clone for $corelightAtHome failed]" | colorize
 	        pressEnter
 		fi
