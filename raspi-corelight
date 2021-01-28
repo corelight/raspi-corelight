@@ -693,46 +693,46 @@ done
 
 enableNtp () {
 
-echo
-echo "$selection" | colorize --underline
-echo
-
-read -p "Accept Configuration (y/n): " acceptConfig
-
-if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-    checkNtp=`dpkg -s ntp | grep Status | awk '{ print $4}'`
-    if [ "$checkNtp" == "installed" ]; then
-        sudo systemctl start ntp
+    echo
+    echo "$selection" | colorize --underline
+    echo
+    
+    read -p "Accept Configuration (y/n): " acceptConfig
+    
+    if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
+        checkNtp=`dpkg -s ntp | grep Status | awk '{ print $4}'`
+        if [ "$checkNtp" == "installed" ]; then
+            sudo systemctl start ntp
+        else
+            sudo apt -y install ntp
+            sudo systemctl start ntp
+        fi
+        echo "$selection complete."
+        pressEnter
     else
-        sudo apt -y install ntp
-        sudo systemctl start ntp
+        echo
+        echo "Cancelling Configuration Change"
+        echo
     fi
-    echo "$selection complete."
-    pressEnter
-else
-    echo
-    echo "Cancelling Configuration Change"
-    echo
-fi
 }
 
 disableNtp () {
 
-echo
-echo "$selection" | colorize --underline
-echo
-
-read -p "Accept Configuration (y/n): " acceptConfig
-
-if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-    sudo systemctl stop ntp
-    echo "$selection complete."
     echo
-else
+    echo "$selection" | colorize --underline
     echo
-    echo "Cancelling Configuration Change"
-    echo
-fi
+    
+    read -p "Accept Configuration (y/n): " acceptConfig
+    
+    if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
+        sudo systemctl stop ntp
+        echo "$selection complete."
+        echo
+    else
+        echo
+        echo "Cancelling Configuration Change"
+        echo
+    fi
 }
 
 configureHostname () {
@@ -854,13 +854,9 @@ dateAndTimeMenu () {
     echo "$menuPath" | colorize --reverse --cyan
     echo
 
-    select selection in "BACK" "Show Date and Time Configuration" "Set Date" "Set Time" "Set Timezone" "Enable NTP" "Disable NTP"
+    select selection in "BACK" "Set Date" "Set Time" "Set Timezone" "Enable NTP" "Disable NTP"
     do
         case "$selection" in
-            "Show Date and Time Configuration")
-                showDateAndTime
-                menuDisplay
-            ;;
             "Set Date")
                 setDate
                 menuDisplay
