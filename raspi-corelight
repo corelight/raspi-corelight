@@ -402,11 +402,10 @@ installLicense () {
 		fi
 }
 enableSshd () {
-	clear
 	echo "[Enabling SSHD]" | colorize --cyan;
 	sudo systemctl enable ssh ;
 	sudo systemctl start ssh ;
-	pressEnter ;
+	sleep 3 ;
 }
 
 sshdStatus () {
@@ -426,7 +425,7 @@ denyEth0 () {
     	if ! grep -q '^denyinterfaces eth0' /etc/dhcpcd.conf ; then
     		echo 'denyinterfaces eth0' | sudo tee -a /etc/dhcpcd.conf >/dev/null
     		sudo more /etc/dhcpcd.conf
-    		echo "[Press Enter]"; read DUMMY
+    		echo "[Press Enter]" | colorize; read DUMMY
 		echo "auto eth0" | sudo tee -a /etc/network/interfaces ;
 		echo "iface eth0 inet manual" | sudo tee -a /etc/network/interfaces ;
 		echo "up ifconfig 0.0.0.0 up" | sudo tee -a /etc/network/interfaces ;
@@ -458,6 +457,63 @@ setupRepo () {
 editCorelightCfg () {
 	$editor $corelightCfg
 }
+setupHumio () {
+	HUMIO_ENABLE_STATUS=`grep Corelight\:\:hec_enable $CORELIGHT_CONFIG | awk '{print $2}'`
+	HUMIO_HECURL=`grep Corelight\:\:hec_url $CORELIGHT_CONFIG | awk '{print $2}'`
+	echo "Current Config:";
+	echo "Export target is [$HUMIO_HECURL]";
+	echo "Export enable is [$HUMIO_ENABLE_STATUS]";
+	echo "";
+    HUMIO_TOKEN="" ;
+	HUMIO_HECURL="" ;
+	echo "[Please enter Humio URL]:" ;
+	echo "[Enter https://cloud.us.humio.com or https://cloud.humio.com]:" ; read HUMIO_HECURL ;
+	echo "[Please enter Humio API token]:" ; read HUMIO_TOKEN ;
+	sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$HUMIO_TOKEN|" "$CORELIGHT_CONFIG";
+	sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$HUMIO_HECURL/services/collector|" "$CORELIGHT_CONFIG";
+	sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$CORELIGHT_CONFIG";
+	sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tT|" "$CORELIGHT_CONFIG";
+	sensorRestart ;;
+}
+setup_splunk () {
+	while true ;
+	do
+			banner_menu
+			SPLUNK_ENABLE_STATUS=`grep Corelight\:\:hec_enable $CORELIGHT_CONFIG | awk '{print $2}'`
+			SPLUNK_HECURL=`grep Corelight\:\:hec_url $CORELIGHT_CONFIG | awk '{print $2}'`
+			echo "Current Config:";
+			echo "Export target is [$SPLUNK_HECURL]";
+			echo "Export enable is [$SPLUNK_ENABLE_STATUS]";
+			echo "";
+			echo "Splunk Config: ";
+			echo "";
+			echo " (c) Configure splunk";
+			echo " (d) Disable splunk";
+			echo " (m) Return to Management Menu";
+			echo "" ;
+			echo $MSG ;
+			echo "" ;
+			ANSWER="" ;
+			echo [Select by pressing the letter and then ENTER] ; read ANSWER ;
+			case $ANSWER in
+				c|C) SPLUNK_TOKEN="" ;
+					SPLUNK_HECURL="" ;
+					clear; echo "[Please enter Splunk URL]:" ;
+					echo "[http://<IP>:8088/services/collector/event]:" ; read SPLUNK_HECURL ;
+					echo "[Please enter Splunk API token]:" ; read SPLUNK_TOKEN ;
+			       		sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$SPLUNK_TOKEN|" "$CORELIGHT_CONFIG";
+					sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$SPLUNK_HECURL|" "$CORELIGHT_CONFIG";
+					sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$CORELIGHT_CONFIG";
+					sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tF|" "$CORELIGHT_CONFIG";
+					sensor_restart ;;
+				d|D) sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tF|" "$CORELIGHT_CONFIG";
+					sensor_restart ;;
+				m|M) break ;;
+				*)   badchoice ;;
+			esac
+	done
+}
+
 quickConfig () {
 	clear
 	echo "###########################################################"
