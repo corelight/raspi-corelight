@@ -228,37 +228,37 @@ runCorelightAtHome () {
 	fi
 #
 # Launch menu if everything checks out
-AARCH64=`uname -a | awk '{print $13}'`
-if [ "$AARCH64" = "aarch64" ] ; then
-	mainMenu
-else
-	while true
-	do
-		clear ;
-		echo "#####################################################";
-		echo "# It appears this is the first time you have ran    #";
-	    echo "# this script and we have detected that this device #";
-       	echo "# needs to upgrade the kernel to 64bit and modify   #";
-		echo "# the repos accordingly.                            #";
-		echo "#                                                   @";
-		echo "# This will require a reboot after upgrade and then #";
-		echo "# installation of the Corelight Software Sensor can #";
-		echo "# proceed.                                          #";
-		echo "#                                                   #";
-		echo "# !!!This process requires internet access!!!       #";
-		echo "#####################################################";
-		echo "" ;
-		echo $MSG ;
-		echo "" ;
-		ANSWER="0" ;
-		echo "[Proceed (y/n)]" | colorize --green; read ANSWER ;
-		case $ANSWER in
-			n|N) echo "[You have selected [n]. Exiting...]" ; break ;;
-			y|Y) clear ; echo "[Making magic happen. Hold...]" ; fix64bitRaspian ;;
-			*)   badchoice ;;
-		esac
-	done
-fi
+    AARCH64=`uname -a | awk '{print $13}'`
+    if [ "$AARCH64" = "aarch64" ] ; then
+        mainMenu
+    else
+        while true
+        do
+            clear ;
+            echo "#####################################################";
+            echo "# It appears this is the first time you have ran    #";
+            echo "# this script and we have detected that this device #";
+            echo "# needs to upgrade the kernel to 64bit and modify   #";
+            echo "# the repos accordingly.                            #";
+            echo "#                                                   @";
+            echo "# This will require a reboot after upgrade and then #";
+            echo "# installation of the Corelight Software Sensor can #";
+            echo "# proceed.                                          #";
+            echo "#                                                   #";
+            echo "# !!!This process requires internet access!!!       #";
+            echo "#####################################################";
+            echo "" ;
+            echo $MSG ;
+            echo "" ;
+            ANSWER="0" ;
+            echo "[Proceed (y/n)]" | colorize --green; read ANSWER ;
+            case $ANSWER in
+                n|N) echo "[You have selected [n]. Exiting...]" ; break ;;
+                y|Y) clear ; echo "[Making magic happen. Hold...]" ; fix64bitRaspian ;;
+                *)   badchoice ;;
+            esac
+        done
+    fi
 }
 
 # fonction to install 64bit Raspbian kernel
