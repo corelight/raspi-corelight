@@ -724,6 +724,7 @@ else
     echo
     echo "Cancelling Configuration Change"
     echo
+fi
 }
 
 disableNtp () {
