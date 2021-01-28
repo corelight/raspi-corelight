@@ -360,7 +360,8 @@ defineSniff () {
 	monitorInterface=""
 	echo "[Interface Lists:]" ;
 	echo `ifconfig -s | awk '{print $1}'` ;
-	echo "Define Interface for Corelight to monitor [eth0~2]:" ; read monitorInterface ;
+	echo
+    echo "Define Interface for Corelight to monitor [eth0~2]:" ; read monitorInterface ;
 	monitorInterface=${monitorInterface:-eth0~2}
     echo
     echo "New monitor interface is: [$monitorInterface]"
