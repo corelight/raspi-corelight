@@ -194,7 +194,7 @@ echo "  Timezone: $timezoneStat  (NTP $ntpEnabledStat)"
 echo
 printf "  Sensor Service:       %-25s%-25s%-25s\n" "$sensorStat" "$sensorEnabledStat" "v$sensorVersion"
 
-printf "  System Auto-Update:   %-25s%-25s%-25s\n" "$sysAutoUpdateStat" "$sysAutoUpdateEnabledStat" "$sysAutoUpdateConfig"
+#printf "  System Auto-Update:   %-25s%-25s%-25s\n" "$sysAutoUpdateStat" "$sysAutoUpdateEnabledStat" "$sysAutoUpdateConfig"
 echo
 echo "Management Interface:"
 echo
@@ -882,7 +882,7 @@ systemMenu () {
     echo "$menuPath" | colorize --reverse --cyan
     echo
     
-    select selection in "BACK" "Show System INFO" "Date and Time" "Configure Hostname" "#Configure System Auto-update"
+    select selection in "BACK" "Show System INFO" "Date and Time" "Configure Hostname"
     do
         case "$selection" in
 	    "Show System INFO")
@@ -939,7 +939,7 @@ updatesMenu () {
     echo "$menuPath" | colorize --reverse --cyan
     echo
 
-    select selection in "BACK" "Update Corelight" "Update Corelight@Home Menu" "Update System" "Auto Update"
+    select selection in "BACK" "Update Corelight" "Update Corelight@Home Menu" "Update System"
     do
         case "$selection" in
             "Update Corelight")
@@ -954,10 +954,6 @@ updatesMenu () {
  		clear ; sudo apt-get --assume-yes upgrade ; pressEnter
  		menuDisplay
  	   ;;
-	   "Auto Update")
-		autoUpdate
-		menuDisplay
-	   ;;
  	   "BACK")
  		menuPath="Sensor"
  		break
