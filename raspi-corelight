@@ -715,8 +715,6 @@ if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
     else
         sudo apt -y install ntp
         sudo systemctl start ntp
-        echo "$selection complete."
-        pressEnter
     fi
     echo "$selection complete."
     pressEnter
