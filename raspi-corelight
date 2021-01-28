@@ -155,11 +155,11 @@ myIpStat=
 myGatewayStat=
 myDnsStat=
 
-if sudo grep -q dhcp "$configFile"; then
-    myDhcpStat="Enabled"
-else
-    myDhcpStat="Disabled"
-fi
+#if sudo grep -q dhcp "$configFile"; then
+#    myDhcpStat="Enabled"
+#else
+#    myDhcpStat="Disabled"
+#fi
 
 # Network info
 myIpStat=$(ip -4 addr list wlan0 | grep inet | cut -f 6 -d " ")
@@ -199,7 +199,7 @@ echo
 echo "Management Interface:"
 echo
 echo "  Interface:  " $mgtInterface
-echo "  DHCP:       " $myDhcpStat
+#echo "  DHCP:       " $myDhcpStat
 echo "  IP:         " $myIpStat
 echo "  Gateway:    " $myGatewayStat
 echo "  DNS:        " $myDnsStat
