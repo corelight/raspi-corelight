@@ -475,45 +475,26 @@ setupHumio () {
 	sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tT|" "$corelightCfg";
 	sensorRestart ;
 }
-setup_splunk () {
-	while true ;
-	do
-			banner_menu
-			SPLUNK_ENABLE_STATUS=`grep Corelight\:\:hec_enable $corelightCfg | awk '{print $2}'`
-			SPLUNK_HECURL=`grep Corelight\:\:hec_url $corelightCfg | awk '{print $2}'`
-			echo "Current Config:";
-			echo "Export target is [$SPLUNK_HECURL]";
-			echo "Export enable is [$SPLUNK_ENABLE_STATUS]";
-			echo "";
-			echo "Splunk Config: ";
-			echo "";
-			echo " (c) Configure splunk";
-			echo " (d) Disable splunk";
-			echo " (m) Return to Management Menu";
-			echo "" ;
-			echo $MSG ;
-			echo "" ;
-			ANSWER="" ;
-			echo [Select by pressing the letter and then ENTER] ; read ANSWER ;
-			case $ANSWER in
-				c|C) SPLUNK_TOKEN="" ;
-					SPLUNK_HECURL="" ;
-					clear; echo "[Please enter Splunk URL]:" ;
-					echo "[http://<IP>:8088/services/collector/event]:" ; read SPLUNK_HECURL ;
-					echo "[Please enter Splunk API token]:" ; read SPLUNK_TOKEN ;
-			       		sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$SPLUNK_TOKEN|" "$corelightCfg";
-					sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$SPLUNK_HECURL|" "$corelightCfg";
-					sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
-					sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tF|" "$corelightCfg";
-					sensor_restart ;;
-				d|D) sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tF|" "$corelightCfg";
-					sensor_restart ;;
-				m|M) break ;;
-				*)   badchoice ;;
-			esac
-	done
+setupSplunk () {
+	SPLUNK_ENABLE_STATUS=`grep Corelight\:\:hec_enable $corelightCfg | awk '{print $2}'`
+	SPLUNK_HECURL=`grep Corelight\:\:hec_url $corelightCfg | awk '{print $2}'`
+	echo "Current Config:";
+	echo "Export target is [$SPLUNK_HECURL]";
+	echo "Export enable is [$SPLUNK_ENABLE_STATUS]";
+	echo "";
+    SPLUNK_TOKEN="" ;
+	SPLUNK_HECURL="" ;
+	echo "[Please enter Splunk URL]:" ;
+	echo "[http://<IP>:8088/services/collector/event]:" ; read SPLUNK_HECURL ;
+	echo "[Please enter Splunk API token]:" ; read SPLUNK_TOKEN ;
+	sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$SPLUNK_TOKEN|" "$corelightCfg";
+	sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$SPLUNK_HECURL|" "$corelightCfg";
+	sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
+	sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tF|" "$corelightCfg";
+	sensorRestart ;
 }
 
+# Quick Config function.  The idea for this function is to have a working config by the end and sensor started.
 quickConfig () {
 	clear
 	echo "###########################################################"
