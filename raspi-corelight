@@ -428,18 +428,18 @@ denyEth0 () {
     		echo 'denyinterfaces eth0' | sudo tee -a /etc/dhcpcd.conf >/dev/null
     		sudo more /etc/dhcpcd.conf
     		echo "[Press Enter]" | colorize; read DUMMY
-		echo "auto eth0" | sudo tee -a /etc/network/interfaces ;
-		echo "iface eth0 inet manual" | sudo tee -a /etc/network/interfaces ;
-		echo "up ifconfig 0.0.0.0 up" | sudo tee -a /etc/network/interfaces ;
-		echo "up ip link set eth0 promisc on" | sudo tee -a /etc/network/interfaces ;
-		echo "down ip link set eth0 promisc off" | sudo tee -a /etc/network/interfaces ;
-		echo "down ip link set eth0 down" | sudo tee -a /etc/network/interfaces ;
-		sudo more /etc/network/interfaces
-		pressEnter ;
-	else
-		echo "[This has already been done.]"
-		pressEnter ;
-	fi
+		    echo "auto eth0" | sudo tee -a /etc/network/interfaces ;
+		    echo "iface eth0 inet manual" | sudo tee -a /etc/network/interfaces ;
+		    echo "up ifconfig 0.0.0.0 up" | sudo tee -a /etc/network/interfaces ;
+		    echo "up ip link set eth0 promisc on" | sudo tee -a /etc/network/interfaces ;
+		    echo "down ip link set eth0 promisc off" | sudo tee -a /etc/network/interfaces ;
+		    echo "down ip link set eth0 down" | sudo tee -a /etc/network/interfaces ;
+		    sudo more /etc/network/interfaces
+		    pressEnter ;
+	    else
+		    echo "[This has already been done.]"
+		    pressEnter ;
+	    fi
     fi
 }
 setupRepo () {
