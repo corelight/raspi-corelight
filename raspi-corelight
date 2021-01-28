@@ -305,8 +305,6 @@ updateAtHome () {
             sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
             echo "[Installed Corelight@Home to $installPath ]"
             echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
-            echo "[Restarting Corelight@Home Menu...]"; sleep 3
-            /usr/bin/$corelightAtHome
         else
 	        echo "[ERROR git clone for $corelightAtHome failed]" | colorize
 	        pressEnter
