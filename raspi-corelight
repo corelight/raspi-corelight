@@ -247,8 +247,8 @@ else
 		clear ;
 		echo "#####################################################";
 		echo "# It appears this is the first time you have ran    #";
-	       	echo "# this script and we have detected that this device #";
-       		echo "# needs to upgrade the kernel to 64bit and modify   #";
+	    echo "# this script and we have detected that this device #";
+       	echo "# needs to upgrade the kernel to 64bit and modify   #";
 		echo "# the repos accordingly.                            #";
 		echo "#                                                   @";
 		echo "# This will require a reboot after upgrade and then #";
@@ -472,6 +472,7 @@ setupHumio () {
     echo ""
     echo "New Export target is [$HUMIO_HECURL/services/collector]";
     echo "New Export enable is [$HUMIO_ENABLE_STATUS]";
+    echo ""
     read -p "Accept Configuration (y/n): " acceptConfig
     if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
 	    sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$HUMIO_TOKEN|" "$corelightCfg";
