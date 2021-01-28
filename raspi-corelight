@@ -578,16 +578,16 @@ quickConfig () {
 	sensorRestart
 }
 
-showDateAndTime () {
-
-echo
-echo "Date and Time Configuration" | colorize --underline
-echo
-
-timedatectl
-echo "NTP Client is: `systemctl status ntp | grep "Active" | awk '{ print $2 }' | colorize`"
-pressEnter
-}
+#showDateAndTime () {
+#
+#echo
+#echo "Date and Time Configuration" | colorize --underline
+#echo
+#
+#timedatectl
+#echo "NTP Client is: `systemctl status ntp | grep "Active" | awk '{ print $2 }' | colorize`"
+#pressEnter
+#}
 
 setDate () {
 
@@ -700,7 +700,7 @@ do
 done
 }
 
-configureNtp () {
+enableNtp () {
 
 echo
 echo "$selection" | colorize --underline
@@ -709,15 +709,39 @@ echo
 read -p "Accept Configuration (y/n): " acceptConfig
 
 if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-    sudo systemctl start ntp
+    checkNtp=`dpkg -s ntp | grep Status | awk '{ print $4}'`
+    if [ "$checkNtp" == "installed" ]; then
+        sudo systemctl start ntp
+    else
+        sudo apt -y install ntp
+        sudo systemctl start ntp
+        echo "$selection complete."
+        pressEnter
+    fi
     echo "$selection complete."
+    pressEnter
+else
     echo
-fi
-if [[ "$acceptConfig" == "n" ]] || [[ "$acceptConfig" == "no" ]]; then
+    echo "Cancelling Configuration Change"
+    echo
+}
+
+disableNtp () {
+
+echo
+echo "$selection" | colorize --underline
+echo
+
+read -p "Accept Configuration (y/n): " acceptConfig
+
+if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
     sudo systemctl stop ntp
     echo "$selection complete."
     echo
-
+else
+    echo
+    echo "Cancelling Configuration Change"
+    echo
 fi
 }
 
@@ -860,11 +884,11 @@ dateAndTimeMenu () {
                 menuDisplay
             ;;
             "Enable NTP")
-                configureNtp yes
+                enableNtp
                 menuDisplay
             ;;
             "Disable NTP")
-                configureNtp no
+                disableNtp
                 menuDisplay
             ;;
             "BACK")
