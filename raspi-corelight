@@ -150,16 +150,9 @@ pressEnter () {
 
 corelightStat () {
 
-myDhcpStat=
 myIpStat=
 myGatewayStat=
 myDnsStat=
-
-#if sudo grep -q dhcp "$configFile"; then
-#    myDhcpStat="Enabled"
-#else
-#    myDhcpStat="Disabled"
-#fi
 
 # Network info
 myIpStat=$(ip -4 addr list wlan0 | grep inet | cut -f 6 -d " ")
@@ -173,8 +166,8 @@ sensorEnabledStat=$(systemctl is-enabled $corelight | colorize)
 sensorVersion=`$corelight -v`
 
 # Auto Update info
-sysAutoUpdateStat=$(systemctl is-active apt-daily-upgrade.timer | colorize)
-sysAutoUpdateEnabledStat=$(systemctl is-enabled apt-daily-upgrade.timer | colorize)
+#sysAutoUpdateStat=$(systemctl is-active apt-daily-upgrade.timer | colorize)
+#sysAutoUpdateEnabledStat=$(systemctl is-enabled apt-daily-upgrade.timer | colorize)
 
 # System info
 timezoneStat=$(timedatectl | grep "Time zone:" | cut -f 2 -d ":")
@@ -198,8 +191,6 @@ printf "  Sensor Service:       %-25s%-25s%-25s\n" "$sensorStat" "$sensorEnabled
 echo
 echo "Management Interface:"
 echo
-echo "  Interface:  " $mgtInterface
-#echo "  DHCP:       " $myDhcpStat
 echo "  IP:         " $myIpStat
 echo "  Gateway:    " $myGatewayStat
 echo "  DNS:        " $myDnsStat
