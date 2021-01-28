@@ -469,11 +469,21 @@ setupHumio () {
 	echo "[Please enter Humio URL]:" ;
 	echo "[Enter https://cloud.us.humio.com or https://cloud.humio.com]:" ; read HUMIO_HECURL ;
 	echo "[Please enter Humio API token]:" ; read HUMIO_TOKEN ;
-	sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$HUMIO_TOKEN|" "$corelightCfg";
-	sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$HUMIO_HECURL/services/collector|" "$corelightCfg";
-	sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
-	sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tT|" "$corelightCfg";
-	sensorRestart ;
+    echo ""
+    echo "New Export target is [$HUMIO_HECURL]";
+    echo "New Export enable is [$HUMIO_ENABLE_STATUS]";
+    read -p "Accept Configuration (y/n): " acceptConfig
+    if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
+	    sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$HUMIO_TOKEN|" "$corelightCfg";
+	    sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$HUMIO_HECURL/services/collector|" "$corelightCfg";
+	    sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
+	    sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tT|" "$corelightCfg";
+	    sensorRestart ;
+    else
+        echo
+        echo "Cancelling Configuration Change"
+        echo
+fi    
 }
 setupSplunk () {
 	SPLUNK_ENABLE_STATUS=`grep Corelight\:\:hec_enable $corelightCfg | awk '{print $2}'`
