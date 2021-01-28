@@ -170,7 +170,7 @@ myDnsStat=$(grep ^nameserver /etc/resolv.conf | cut -f 2 -d  " ")
 # Sensor info
 sensorStat=$(systemctl is-active $corelight | colorize)
 sensorEnabledStat=$(systemctl is-enabled $corelight | colorize)
-sensorVersion=$corelight -v
+sensorVersion=`$corelight -v`
 
 # Auto Update info
 sysAutoUpdateStat=$(systemctl is-active apt-daily-upgrade.timer | colorize)
