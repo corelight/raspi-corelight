@@ -471,6 +471,7 @@ setupHumio () {
 	echo "[Please enter Humio API token]:" ; read HUMIO_TOKEN ;
     echo ""
     echo "New Export target is [$HUMIO_HECURL/services/collector]";
+    echo "New Export token is  [$HUMIO_TOKEN];"
     echo "New Export enable is [$HUMIO_ENABLE_STATUS]";
     echo ""
     read -p "Accept Configuration (y/n): " acceptConfig
@@ -498,11 +499,23 @@ setupSplunk () {
 	echo "[Please enter Splunk URL]:" ;
 	echo "[http://<IP>:8088/services/collector/event]:" ; read SPLUNK_HECURL ;
 	echo "[Please enter Splunk API token]:" ; read SPLUNK_TOKEN ;
-	sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$SPLUNK_TOKEN|" "$corelightCfg";
-	sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$SPLUNK_HECURL|" "$corelightCfg";
-	sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
-	sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tF|" "$corelightCfg";
-	sensorRestart ;
+	echo ""
+    echo "New Export target is [$SPLUNK_HECURL/services/collector]";
+    echo "New Export token is  [$SPLUNK_TOKEN];"
+    echo "New Export enable is [$SPLUNK_ENABLE_STATUS]";
+    echo ""
+    read -p "Accept Configuration (y/n): " acceptConfig
+    if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
+	    sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$SPLUNK_TOKEN|" "$corelightCfg";
+	    sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$SPLUNK_HECURL|" "$corelightCfg";
+	    sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
+	    sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tF|" "$corelightCfg";
+	    sensorRestart ;
+    else
+        echo
+        echo "Cancelling Configuration Change"
+        echo
+    fi    
 }
 
 # Quick Config function.  The idea for this function is to have a working config by the end and sensor started.
