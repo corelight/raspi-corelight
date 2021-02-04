@@ -5,7 +5,7 @@
 corelightCfgVer="2.0"
 corelight="corelight-softsensor"
 corelightAtHome="raspi-corelight"
-gitRepo="https://maestro.corelight.io/success/raspi-corelight.git"
+gitRepo="https://github.com/corelight/raspi-corelight.git"
 gitBranch="devel"
 installPath="/opt/raspi-corelight"
 logo="Corelight@Home Software Sensor Menu"
