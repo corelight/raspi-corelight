@@ -12,7 +12,7 @@ logo="Corelight@Home Software Sensor Menu"
 licenseFile="/etc/corelight-license.txt"
 corelightCfg="/etc/corelight-softsensor.conf"
 editor="nano"
-#wanIP=`host myip.opendns.com resolver1.opendns.com | grep "myip.opendns.com has" | awk '{print $4}'`
+
 
 colorize () {
 
