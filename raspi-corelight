@@ -2,7 +2,7 @@
 # source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/devel/raspi-corelight)
 
 
-corelightCfgVer="2.0"
+corelightAtHomeVer="2.0"
 corelight="corelight-softsensor"
 corelightAtHome="raspi-corelight"
 gitRepo="https://github.com/corelight/raspi-corelight.git"
@@ -200,7 +200,7 @@ echo "  DNS:        " $myDnsStat
 
 corelightStatus () {
     clear
-    echo $logo \(v$corelightCfgVer\) | colorize --reverse --cyan
+    echo $logo \(v$corelightAtHomeVer\) | colorize --reverse --cyan
     echo
     echo "Hostname:" $currentHostname
     echo "Host IP:" `hostname -I | colorize --cyan`
