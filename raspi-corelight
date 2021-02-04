@@ -223,6 +223,9 @@ runCorelightAtHome () {
 	fi
 #
 	if ! [ -x $installPath/$corelightAtHome ]; then
+        if [ -x /usr/bin/raspi-corelight ]; then
+            sudo rm /usr/bin/raspi-corelight
+        fi
         if sudo git clone --depth 1 -b $gitBranch $gitRepo $installPath ; then
             echo [Initial CorelightAtHome install...]
             sudo chmod 755 $installPath/$corelightAtHome
