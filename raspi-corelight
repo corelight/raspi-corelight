@@ -222,12 +222,19 @@ runCorelightAtHome () {
 		exit
 	fi
 #
-# Migrate to new Version of Corelight SoftSenor
-	migrateCorelight=`sudo dpkg -s corelight | grep Status | awk '{print $4}'`
-	if [ "$migrateCorelight" = "installed" ]; then
-	   migrate;
-	fi
-#
+	if ! [ -x $installPath/$corelightAtHome ]; then
+        if sudo git clone --depth 1 -b $gitBranch $gitRepo $installPath ; then
+            echo [Initial CorelightAtHome install...]
+            sudo chmod 755 $installPath/$corelightAtHome
+            sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
+            echo "[Installed Corelight@Home to $installPath ]"
+            echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
+        else
+            echo "[ERROR git clone for $corelightAtHome failed]" | colorize
+            pressEnter
+        fi
+    fi
+
 # Launch menu if everything checks out
     AARCH64=`uname -a | awk '{print $13}'`
     if [ "$AARCH64" = "aarch64" ] ; then
