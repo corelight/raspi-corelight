@@ -292,7 +292,8 @@ updateAtHome () {
 		fi
 	else
 		echo [Initial CorelightAtHome install...]
-		if sudo git clone $gitRepo $installPath ; then
+# git clone --depth 1 -b main <repo_url>
+		if sudo git clone --depth 1 -b $gitBranch $gitRepo $installPath ; then
         	sudo chmod 755 $installPath/$corelightAtHome
             sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
             echo "[Installed Corelight@Home to $installPath ]"
