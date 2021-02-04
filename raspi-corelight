@@ -2,7 +2,7 @@
 # source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/main/raspi-corelight)
 
 
-corelightCfgVer="2.0"
+corelightAtHomeVer="2.0"
 corelight="corelight-softsensor"
 corelightAtHome="raspi-corelight"
 gitRepo="https://github.com/corelight/raspi-corelight.git"
@@ -12,7 +12,7 @@ logo="Corelight@Home Software Sensor Menu"
 licenseFile="/etc/corelight-license.txt"
 corelightCfg="/etc/corelight-softsensor.conf"
 editor="nano"
-#wanIP=`host myip.opendns.com resolver1.opendns.com | grep "myip.opendns.com has" | awk '{print $4}'`
+
 
 colorize () {
 
@@ -200,7 +200,7 @@ echo "  DNS:        " $myDnsStat
 
 corelightStatus () {
     clear
-    echo $logo \(v$corelightCfgVer\) | colorize --reverse --cyan
+    echo $logo \(v$corelightAtHomeVer\) | colorize --reverse --cyan
     echo
     echo "Hostname:" $currentHostname
     echo "Host IP:" `hostname -I | colorize --cyan`
