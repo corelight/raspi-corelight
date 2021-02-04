@@ -1,12 +1,12 @@
 #!/bin/bash
-# source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/devel/raspi-corelight)
+# source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/main/raspi-corelight)
 
 
 corelightCfgVer="2.0"
 corelight="corelight-softsensor"
 corelightAtHome="raspi-corelight"
 gitRepo="https://github.com/corelight/raspi-corelight.git"
-gitBranch="devel"
+gitBranch="main"
 installPath="/opt/raspi-corelight"
 logo="Corelight@Home Software Sensor Menu"
 licenseFile="/etc/corelight-license.txt"
