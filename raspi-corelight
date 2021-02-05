@@ -274,16 +274,15 @@ runCorelightAtHome () {
 
 # fonction to install 64bit Raspbian kernel
 fix64bitRaspian () {
-	clear ; echo "[Adding arm64 architecture...]";
-	sudo rpi-update
-	echo "arm_64bit=1" | sudo tee -a /boot/config.txt
-	sudo dpkg --add-architecture arm64 ;
-	setupRepo ;
+    clear ; echo "[Adding arm64 architecture...]";
+    sudo rpi-update
+    echo "arm_64bit=1" | sudo tee -a /boot/config.txt
+    sudo dpkg --add-architecture arm64
+    setupRepo ;
     sudo apt -y install ntp
-	installCorelight ;
-    updateAtHome ;
-	echo "[Success] Need to reboot. [Press Enter to reboot.]" ; read DUMMY ;
-	sudo reboot
+    installCorelight
+    echo "[Success] Need to reboot. [Press Enter to reboot.]" ; read DUMMY ;
+    sudo reboot
 }
 
 
