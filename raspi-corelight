@@ -240,8 +240,17 @@ runCorelightAtHome () {
 
 # Launch menu if everything checks out
     AARCH64=`uname -a | awk '{print $13}'`
-    if [ "$AARCH64" = "aarch64" ] ; then
+    if [[] "$AARCH64" == "aarch64" ]] && [[ -x $corelight ]] ; then
         mainMenu
+        elif
+            if [ "$AARCH64" == "aarch64" ] && [ ! -x $corelight ] ; then
+                   setupRepo ;
+                   sudo apt -y install ntp
+                   installCorelight
+                   echo "[Launching Corelight@Home.  Run Quick Start (option 6) to finish initial configuration.]" | colorize --green
+                   pressEnter
+                   mainMenu
+            fi
     else
         while true
         do
@@ -270,18 +279,19 @@ runCorelightAtHome () {
             esac
         done
     fi
+
 }
 
 # fonction to install 64bit Raspbian kernel
 fix64bitRaspian () {
     clear ; echo "[Adding arm64 architecture...]";
     sudo rpi-update
-    echo "arm_64bit=1" | sudo tee -a /boot/config.txt
+    if [ ! -z $(grep "arm_64bit=1" "/boot/config.txt") ]; then echo "arm_64bit=1" | sudo tee -a /boot/config.txt; fi
     sudo dpkg --add-architecture arm64
-    setupRepo ;
-    sudo apt -y install ntp
-    installCorelight
-    echo "[Success] Need to reboot. [Press Enter to reboot.]" ; read DUMMY ;
+    #setupRepo ;
+    #sudo apt -y install ntp
+    #installCorelight
+    #echo "[Success] Need to reboot. [Press Enter to reboot.]" ; read DUMMY ;
     sudo reboot
 }
 
