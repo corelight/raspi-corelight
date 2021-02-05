@@ -275,9 +275,9 @@ runCorelightAtHome () {
 # fonction to install 64bit Raspbian kernel
 fix64bitRaspian () {
 	clear ; echo "[Adding arm64 architecture...]";
-	clear ; sudo rpi-update &&
-	echo "arm_64bit=1" | sudo tee -a /boot/config.txt &&
-	clear ; sudo dpkg --add-architecture arm64 ;
+	sudo rpi-update
+	echo "arm_64bit=1" | sudo tee -a /boot/config.txt
+	sudo dpkg --add-architecture arm64 ;
 	setupRepo ;
     sudo apt -y install ntp
 	installCorelight ;
@@ -453,6 +453,13 @@ denyEth0 () {
     fi
 }
 setupRepo () {
+    clear ; echo "[Fixing repos...]" ;
+	sudo echo ""deb [arch=armhf] http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi"" | sudo tee /etc/apt/sources.list ;
+	sudo echo ""# Uncomment line below then 'apt-get update' to enable 'apt-get source'"" | sudo tee -a /etc/apt/sources.list ;
+	sudo echo ""# deb-src http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi"" | sudo tee -a  /etc/apt/sources.list ;
+	sudo echo ""deb [arch=armhf] http://archive.raspberrypi.org/debian/ buster main"" | sudo tee /etc/apt/sources.list.d/raspi.list ;
+	sudo echo ""# Uncomment line below then 'apt-get update' to enable 'apt-get source'"" | tee -a /etc/apt/sources.list.d/raspi.list ;
+	sudo echo ""# deb-src http://archive.raspberrypi.org/debian/ buster main"" | sudo tee -a  /etc/apt/sources.list.d/raspi.list ;
 	echo "[Setting up Authenticated repository for corelight-softsensor.  Downloading Public Key....]";
 	wget -qO - https://pkgs.corelight.com/signing.pub | sudo apt-key add ;
 	echo "[This requires your iDaptive Username and Password. ]";
@@ -464,6 +471,7 @@ setupRepo () {
 	echo " login $REPO_USERNAME" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
 	echo "[Please Enter iDaptive Password]:"; read REPO_PASSWORD;
 	echo " password $REPO_PASSWORD" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+    sudo apt update
 }
 
 editCorelightCfg () {
