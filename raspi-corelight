@@ -461,7 +461,7 @@ setupRepo () {
     sudo echo ""# Uncomment line below then 'apt-get update' to enable 'apt-get source'"" | sudo tee -a /etc/apt/sources.list.d/raspi.list ;
     sudo echo ""# deb-src http://archive.raspberrypi.org/debian/ buster main"" | sudo tee -a  /etc/apt/sources.list.d/raspi.list ;
     echo "[Setting up Authenticated repository for corelight-softsensor.  Downloading Public Key....]";
-    wget -qO - https://pkgs.corelight.com/signing.pub | sudo apt-key add ;
+    wget -qO - https://pkgs.corelight.com/signing.pub | sudo apt-key add -;
     echo "[This requires your iDaptive Username and Password. ]";
     sudo touch /etc/apt/sources.list.d/corelight-softsensor.list;
     echo "deb [arch=arm64] https://pkgs.corelight.com/deb/stable `lsb_release -sc` main" | sudo tee /etc/apt/sources.list.d/corelight-softsensor.list 1> /dev/null;
