@@ -243,7 +243,7 @@ runCorelightAtHome () {
     if [[] "$AARCH64" == "aarch64" ]] && [[ -x $corelight ]] ; then
         mainMenu
         elif
-            if [ "$AARCH64" == "aarch64" ] && [ ! -x $corelight ] ; then
+            if [ "$AARCH64" == "aarch64" ] && [ ! -x /usr/bin/$corelight ] ; then
                    setupRepo ;
                    sudo apt -y install ntp
                    installCorelight
