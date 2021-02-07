@@ -284,7 +284,7 @@ runCorelightAtHome () {
 fix64bitRaspian () {
     clear ; echo "[Adding arm64 architecture...]";
     sudo rpi-update
-    if [ ! -z $(grep "arm_64bit=1" "/boot/config.txt") ]; then echo "arm_64bit=1" | sudo tee -a /boot/config.txt; fi
+    if [ ! -z $(grep "arm_64bit\=1" "/boot/config.txt") ]; then echo "arm_64bit=1" | sudo tee -a /boot/config.txt; fi
     sudo dpkg --add-architecture arm64
     #setupRepo ;
     #sudo apt -y install ntp
