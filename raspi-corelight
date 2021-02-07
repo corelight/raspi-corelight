@@ -246,7 +246,7 @@ runCorelightAtHome () {
                    setupRepo ;
                    sudo apt -y install ntp
                    installCorelight
-                   echo "[Launching Corelight@Home.  Run Quick Start (option 6) to finish initial configuration.]" | colorize --green
+                   echo "[Launching Corelight@Home.  Run Quick Config (option 6) to finish initial configuration.]" | colorize --green
                    pressEnter
                    mainMenu
     else
