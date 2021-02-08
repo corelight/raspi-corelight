@@ -333,7 +333,7 @@ licensed () {
 	    CUSTOMER_LIC_EXPIRE=`$corelight license | grep "sensor.expire" | cut -f2 -d=`
 	    echo "$CUSTOMER_LIC_NAME - Expires: $CUSTOMER_LIC_EXPIRE" ;
 	else
-	    echo " ###NO - $licenseFile does not exist###" ;
+	    echo " ###NO - $licenseFile does not exist###" | colorize --red ;
 	fi
 }
 
