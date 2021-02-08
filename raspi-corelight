@@ -459,6 +459,16 @@ denyEth0 () {
 	    fi
     fi
 }
+
+# Setup iDaptive authentication File
+idaptive () {
+    echo "machine pkgs.corelight.com/deb/stable" | sudo tee /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+    read -p "[Please Enter iDaptive Username]:" REPO_USERNAME;
+    echo " login $REPO_USERNAME" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+    read -p "[Please Enter iDaptive Password]:" REPO_PASSWORD;
+    echo " password $REPO_PASSWORD" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+}
+
 setupRepo () {
     clear ; echo "[Fixing repos...]" ;
     sudo echo ""deb [arch=armhf] http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi"" | sudo tee /etc/apt/sources.list ;
@@ -472,16 +482,15 @@ setupRepo () {
     echo "[This requires your iDaptive Username and Password. ]";
     sudo touch /etc/apt/sources.list.d/corelight-softsensor.list;
     echo "deb [arch=arm64] https://pkgs.corelight.com/deb/stable `lsb_release -sc` main" | sudo tee /etc/apt/sources.list.d/corelight-softsensor.list 1> /dev/null;
-    if [ -f /etc/apt/auth.conf.d/corelight-softsensor.conf ]; then
-        echo "machine pkgs.corelight.com/deb/stable" | sudo tee /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+    if [ ! -f /etc/apt/auth.conf.d/corelight-softsensor.conf ]; then
+        idaptive
+    else
         read -p "[iDaptive password has been set.  Would you like to reconfigure? (y/N)" acceptConfig
         if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-            read -p "[Please Enter iDaptive Username]:" REPO_USERNAME;
-            echo " login $REPO_USERNAME" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
-            read -p "[Please Enter iDaptive Password]:" REPO_PASSWORD;
-            echo " password $REPO_PASSWORD" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+            idaptive
             sudo apt update
         fi
+    fi
 }
 
 editCorelightCfg () {
