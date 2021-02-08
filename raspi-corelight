@@ -396,7 +396,7 @@ defineSniff () {
 }
 
 installCorelight () {
-	clear ; sudo apt-get update && sudo apt-get -y install $corelight ;
+	sudo apt-get update && sudo apt-get -y install $corelight ;
 	if [ -f $corelightCfg ]; then
 	   echo "[Found existing Corelight SoftSensor config at $corelightCfg]";
 	else
