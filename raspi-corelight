@@ -1017,7 +1017,7 @@ maintainMenu () {
     echo "$menuPath" | colorize --reverse --cyan
     echo
 
-    select selection in "BACK" "Restart Sensor" "Stop Sensor" "Edit Corelight Config" "Define Monitor Interface" "Install License" "Install Corelight" "Health Check" "Setup Corelight Repository" "Interface Stats" 
+    select selection in "BACK" "Restart Sensor" "Stop Sensor" "Edit Corelight Config" "Define Monitor Interface" "Install License" "Install Corelight" "Health Check" "Setup Corelight Installation Credentials" "Interface Stats" 
     do
         case "$selection" in 
             "Restart Sensor")
@@ -1048,7 +1048,7 @@ maintainMenu () {
 		healthCheck
 		menuDisplay
 	    ;;
-	    "Setup Corelight Repository")
+	    "Setup Corelight Installation Credentials")
 		setupRepo
 		menuDisplay
 	    ;;
