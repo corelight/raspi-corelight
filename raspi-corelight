@@ -239,7 +239,7 @@ runCorelightAtHome () {
     fi
 
 # Launch menu if everything checks out
-    AARCH64=`uname -a | awk '{print $13}'`
+    AARCH64=$(uname -m)
     if [[ "$AARCH64" == "aarch64" ]] && [[ -x /usr/bin/$corelight ]] ; then
         mainMenu
         elif [[ "$AARCH64" == "aarch64" ]] && [[ ! -x /usr/bin/$corelight ]] ; then
