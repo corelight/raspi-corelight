@@ -542,12 +542,13 @@ quickConfig () {
 	ANSWER=""
 	echo "Configre Humio HEC Export? (y/n):" ; read ANSWER ; 
 	if [ $ANSWER = y ]; then
-		HUMIO_TOKEN=""
-		echo "[Please enter Humio API token - https://cloud.humio.com]:" ; read HUMIO_TOKEN ;
-		echo "[Please enter Humio URL - https://cloud.humio.com or https://cloud.us.humio.com]:" ; read HUMIO_URL ;
-	       	sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$HUMIO_TOKEN|" "$corelightCfg";
-		sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$HUMIO_URL/services/collector|" "$corelightCfg";
-		sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
+#		HUMIO_TOKEN=""
+#		echo "[Please enter Humio API token - https://cloud.humio.com]:" ; read HUMIO_TOKEN ;
+#		echo "[Please enter Humio URL - https://cloud.humio.com or https://cloud.us.humio.com]:" ; read HUMIO_URL ;
+#	       	sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$HUMIO_TOKEN|" "$corelightCfg";
+#		sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$HUMIO_URL/services/collector|" "$corelightCfg";
+#		sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
+        setupHumio
 	else
 		ANSWER1=""
 		echo "Configure Splunk HEC Export? (y/n):" ; read ANSWER1 ;
