@@ -242,14 +242,14 @@ runCorelightAtHome () {
     AARCH64=$(uname -m)
     if [[ "$AARCH64" == "aarch64" ]] && [[ -x /usr/bin/$corelight ]] ; then
         mainMenu
-        elif [[ "$AARCH64" == "aarch64" ]] && [[ ! -x /usr/bin/$corelight ]] ; then
-                   echo "[Finishing Corelight@Home installation ]" | colorize --green
-                   setupRepo ;
-                   sudo apt -y install ntp
-                   installCorelight
-                   echo "[Launching Corelight@Home.  Run Quick Config (option 6) to finish initial configuration.]" | colorize --green
-                   pressEnter
-                   mainMenu
+#        elif [[ "$AARCH64" == "aarch64" ]] && [[ ! -x /usr/bin/$corelight ]] ; then
+#                   echo "[Finishing Corelight@Home installation ]" | colorize --green
+#                   setupRepo ;
+#                   sudo apt -y install ntp
+#                   installCorelight
+#                   echo "[Launching Corelight@Home.  Run Quick Config (option 6) to finish initial configuration.]" | colorize --green
+#                   pressEnter
+#                   mainMenu
 #    fi
 }
 #        while true
