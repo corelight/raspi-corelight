@@ -251,7 +251,6 @@ runCorelightAtHome () {
                    pressEnter
                    mainMenu
     fi
-fi
 }
 #        while true
 #        do
