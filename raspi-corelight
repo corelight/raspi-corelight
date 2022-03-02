@@ -242,6 +242,7 @@ runCorelightAtHome () {
     AARCH64=$(uname -m)
     if [[ "$AARCH64" == "aarch64" ]] && [[ -x /usr/bin/$corelight ]] ; then
         mainMenu
+}
 #        elif [[ "$AARCH64" == "aarch64" ]] && [[ ! -x /usr/bin/$corelight ]] ; then
 #                   echo "[Finishing Corelight@Home installation ]" | colorize --green
 #                   setupRepo ;
@@ -251,7 +252,6 @@ runCorelightAtHome () {
 #                   pressEnter
 #                   mainMenu
 #    fi
-}
 #        while true
 #        do
 #            clear ;
