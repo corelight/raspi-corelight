@@ -250,7 +250,7 @@ runCorelightAtHome () {
                    echo "[Launching Corelight@Home.  Run Quick Config (option 6) to finish initial configuration.]" | colorize --green
                    pressEnter
                    mainMenu
-    else
+    fi
 }
 #        while true
 #        do
