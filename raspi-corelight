@@ -251,6 +251,7 @@ runCorelightAtHome () {
                    pressEnter
                    mainMenu
     else
+}
 #        while true
 #        do
 #            clear ;
@@ -278,8 +279,6 @@ runCorelightAtHome () {
 #            esac
 #        done
 #   fi
-
-}
 
 # fonction to install 64bit Raspbian kernel
 #fix64bitRaspian () {
