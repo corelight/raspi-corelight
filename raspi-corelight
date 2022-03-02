@@ -242,56 +242,18 @@ runCorelightAtHome () {
     AARCH64=$(uname -m)
     if [[ "$AARCH64" == "aarch64" ]] && [[ -x /usr/bin/$corelight ]] ; then
         mainMenu
-        elif [[ "$AARCH64" == "aarch64" ]] && [[ ! -x /usr/bin/$corelight ]] ; then
-                   echo "[Finishing Corelight@Home installation ]" | colorize --green
-                   setupRepo ;
-                   sudo apt -y install ntp
-                   installCorelight
-                   echo "[Launching Corelight@Home.  Run Quick Config (option 6) to finish initial configuration.]" | colorize --green
-                   pressEnter
-                   mainMenu
+    else
+        if [[ "$AARCH64" == "aarch64" ]] && [[ ! -x /usr/bin/$corelight ]] ; then
+            echo "[Finishing Corelight@Home installation ]" | colorize --green
+            setupRepo ;
+            sudo apt -y install ntp
+            installCorelight
+            echo "[Launching Corelight@Home.  Run Quick Config (option 6) to finish initial configuration.]" | colorize --green
+            pressEnter
+            mainMenu
+        fi
+    fi
 }
-#        while true
-#        do
-#            clear ;
-#            echo "#####################################################";
-#            echo "# It appears this is the first time you have ran    #";
-#            echo "# this script and we have detected that this device #";
-#            echo "# needs to upgrade the kernel to 64bit and modify   #";
-#            echo "# the repos accordingly.                            #";
-#            echo "#                                                   @";
-#            echo "# This will require a reboot after upgrade and then #";
-#            echo "# installation of the Corelight Software Sensor can #";
-#            echo "# proceed.                                          #";
-#            echo "#                                                   #";
-#            echo "# !!!This process requires internet access!!!       #";
-#            echo "#####################################################";
-#            echo "" ;
-#            echo $MSG ;
-#            echo "" ;
-#            ANSWER="0" ;
-#            echo "[Proceed (y/n)]" | colorize --green; read ANSWER ;
-#            case $ANSWER in
-#                n|N) echo "[You have selected [n]. Exiting...]" ; break ;;
-#                y|Y) clear ; echo "[Making magic happen. Hold...]" ; fix64bitRaspian ;;
-#                *)   badchoice ;;
-#            esac
-#        done
-#   fi
-
-# fonction to install 64bit Raspbian kernel
-#fix64bitRaspian () {
-#    clear ; echo "[Adding arm64 architecture...]";
-#    sudo rpi-update
-#    if ! grep "arm_64bit=1" "/boot/config.txt"; then echo "arm_64bit=1" | sudo tee -a /boot/config.txt; fi
-#    sudo dpkg --add-architecture arm64
-#    #setupRepo ;
-#    #sudo apt -y install ntp
-#    #installCorelight
-#    #echo "[Success] Need to reboot. [Press Enter to reboot.]" ; read DUMMY ;
-#    sudo reboot
-#}
-
 
 # function to update Corelight@Home
 updateAtHome () {
