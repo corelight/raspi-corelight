@@ -277,7 +277,7 @@ runCorelightAtHome () {
 #                *)   badchoice ;;
 #            esac
 #        done
-    fi
+#   fi
 
 }
 
