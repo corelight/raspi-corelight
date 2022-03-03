@@ -213,19 +213,21 @@ corelightStatus () {
 }
 
 runCorelightAtHome () {
-	platform=`cat /etc/os-release | grep "ID=debian" | cut -d"=" -f2`
-	if ! [ $platform = debian ] ; then
-		echo "[ALERT] This script was written for raspbianOS"
-		echo "###!!! Load Raspbian and try this again.   !!!###"
-		echo "###!!! Going to exit from the script now.  !!!###"
-		echo "[Press Enter]" ; read DUMMY ;
-		exit
-	fi
+#	platform=`cat /etc/os-release | grep "ID=debian" | cut -d"=" -f2`
+#	if ! [ $platform = debian ] ; then
+#		echo "[ALERT] This script was written for raspbianOS"
+#		echo "###!!! Load Raspbian and try this again.   !!!###"
+#		echo "###!!! Going to exit from the script now.  !!!###"
+#		echo "[Press Enter]" ; read DUMMY ;
+#		exit
+#	fi
 #
 	if ! [ -x $installPath/$corelightAtHome ]; then
+#   This cleans up v1.0.
         if [ -x /usr/bin/raspi-corelight ]; then
             sudo rm /usr/bin/raspi-corelight
         fi
+#  clone the c@h git repo
         if sudo git clone --depth 1 -b $gitBranch $gitRepo $installPath ; then
             echo [Initial CorelightAtHome install...]
             sudo chmod 755 $installPath/$corelightAtHome
@@ -239,11 +241,10 @@ runCorelightAtHome () {
     fi
 
 # Launch menu if everything checks out
-    AARCH64=$(uname -m)
-    if [[ "$AARCH64" == "aarch64" ]] && [[ -x /usr/bin/$corelight ]] ; then
+    if [[ -x /usr/bin/$corelight ]] ; then
         mainMenu
     else
-        if [[ "$AARCH64" == "aarch64" ]] && [[ ! -x /usr/bin/$corelight ]] ; then
+        if [[ ! -x /usr/bin/$corelight ]] ; then
             echo "[Finishing Corelight@Home installation ]" | colorize --green
             setupRepo ;
 #            sudo apt -y install ntp
