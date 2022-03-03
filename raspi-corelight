@@ -432,13 +432,7 @@ idaptive () {
 }
 
 setupRepo () {
-    clear ; echo "[Fixing repos...]" ;
-    sudo echo ""deb [arch=armhf] http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi"" | sudo tee /etc/apt/sources.list ;
-    sudo echo ""# Uncomment line below then 'apt-get update' to enable 'apt-get source'"" | sudo tee -a /etc/apt/sources.list ;
-    sudo echo ""# deb-src http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi"" | sudo tee -a  /etc/apt/sources.list ;
-    sudo echo ""deb [arch=armhf] http://archive.raspberrypi.org/debian/ buster main"" | sudo tee /etc/apt/sources.list.d/raspi.list ;
-    sudo echo ""# Uncomment line below then 'apt-get update' to enable 'apt-get source'"" | sudo tee -a /etc/apt/sources.list.d/raspi.list ;
-    sudo echo ""# deb-src http://archive.raspberrypi.org/debian/ buster main"" | sudo tee -a  /etc/apt/sources.list.d/raspi.list ;
+    clear ; 
     echo "[Setting up Authenticated repository for corelight-softsensor.  Downloading Public Key....]";
     wget -qO - https://pkgs.corelight.com/signing.pub | sudo apt-key add -;
     echo "[This requires your iDaptive Username and Password. ]";
@@ -466,7 +460,7 @@ setupHumio () {
 	echo "Export enable is [$HUMIO_ENABLE_STATUS]";
 	echo "";
     HUMIO_TOKEN="" ;
-	HUMIO_HECURL=${HUMIO_HECURL:https://cloud.humio.com} ;
+	HUMIO_HECURL=${HUMIO_HECURL:https://cloud.community.humio.com} ;
 	echo "[Please enter Humio URL]:" ;
 	echo "[Enter https://cloud.community.hummio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read HUMIO_HECURL ;
 	echo "[Please enter Humio API token]:" ; read HUMIO_TOKEN ;
