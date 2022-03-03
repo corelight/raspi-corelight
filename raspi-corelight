@@ -460,7 +460,7 @@ setupHumio () {
 	echo "Export enable is [$HUMIO_ENABLE_STATUS]";
 	echo "";
     HUMIO_TOKEN="" ;
-	HUMIO_HECURL=${HUMIO_HECURL:https://cloud.community.humio.com} ;
+	HUMIO_HECURL="${HUMIO_HECURL:=https://cloud.community.humio.com}";
 	echo "[Please enter Humio URL]:" ;
 	echo "[Enter https://cloud.community.hummio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read HUMIO_HECURL ;
 	echo "[Please enter Humio API token]:" ; read HUMIO_TOKEN ;
