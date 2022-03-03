@@ -464,10 +464,11 @@ setupHumio () {
 	echo "[Please enter Humio URL]:" ;
 	echo "[Enter https://cloud.community.hummio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read HUMIO_HECURL ;
 	echo "[Please enter Humio API token]:" ; read HUMIO_TOKEN ;
+
     echo ""
     echo "New Export target is [$HUMIO_HECURL/services/collector]";
     echo "New Export token is  [$HUMIO_TOKEN];"
-    echo "New Export enable is [$HUMIO_ENABLE_STATUS]";
+    echo "New Export enable is [T]";
     echo ""
     read -p "Accept Configuration (y/n): " acceptConfig
     if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
