@@ -502,6 +502,7 @@ setupSplunk () {
     echo "New Export target is [$splunkHecUrl/services/collector]";
     echo "New Export token is  [$splunkToken];"
     echo "New Export enable is [$SPLUNK_ENABLE_STATUS]";
+    #
     echo "New Export prefix is [$splunkPrefix]";
     echo ""
     read -p "Accept Configuration (y/n): " acceptConfig
