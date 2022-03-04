@@ -528,50 +528,36 @@ setupSplunk () {
 quickConfig () {
 	clear
 	echo "###########################################################"
-	echo "# This is a quick config walk-through and will restart"
-	echo "# the Corelight Sensor software. Completing this wizard"
-	echo "# should provide a running Corelight sensor with export"
-	echo "#	to Humio Cloud or Splunk HEC:HTTP."	
-	echo "#"	
-	echo "# The following is required to complete setup:"
-	echo "#  -Monitor Interface (Probably eth0)"
-	echo "#  -Valid Corelight License for Software Sensor"
-	echo "#  -if Humio Need:  API Ingest Token"
-	echo "#  -if Splunk Need: splunk HEC URL & API Token"
-	echo "#"
+	echo "# This is a quick config walk-through and will restart    #"
+	echo "# the Corelight Sensor software. Completing this wizard   #"  
+	echo "# should provide a running Corelight sensor with export   #"
+	echo "#	to Humio Cloud or Splunk HEC:HTTP.                      #"	
+	echo "#                                                         #"	
+	echo "# The following is required to complete setup:            #"
+	echo "#  -Monitor Interface (Probably eth0)                     #"
+	echo "#  -Valid Corelight License for Software Sensor           #"
+	echo "#  -if Humio Need:  API Ingest Token                      #"
+	echo "#  -if Splunk Need: splunk HEC URL & API Token            #"
+	echo "#                                                         #"
 	echo "###########################################################"
 	echo ""
 	echo "[Press Enter to Continue]" ; read DUMMY ;
 	
 	defineSniff
 	installLicense
+    setupRepo
+	enableSshd
 	ANSWER=""
 	echo "Configre Humio HEC Export? (y/n):" ; read ANSWER ; 
 	if [ $ANSWER = y ]; then
-#		HUMIO_TOKEN=""
-#		echo "[Please enter Humio API token - https://cloud.humio.com]:" ; read HUMIO_TOKEN ;
-#		echo "[Please enter Humio URL - https://cloud.humio.com or https://cloud.us.humio.com]:" ; read HUMIO_URL ;
-#	       	sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$HUMIO_TOKEN|" "$corelightCfg";
-#		sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$HUMIO_URL/services/collector|" "$corelightCfg";
-#		sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
         setupHumio
 	else
 		ANSWER1=""
 		echo "Configure Splunk HEC Export? (y/n):" ; read ANSWER1 ;
 		if [ $ANSWER1 = y ]; then
-#			splunkHecUrl=""
-#			splunkToken=""
-#			echo "[Please enter Splunk URL]:" ;
-#			echo "[http://<IP>:8088/services/collector/event]:" ; read splunkHecUrl;
-#			echo "[Please enter Splunk API token]:" ; read splunkToken ;
-#			sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$splunkToken|" "$corelightCfg";
-#			sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$splunkHecUrl|" "$corelightCfg";
-#			sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
             setupSplunk
 		fi
 	fi
-	setupRepo
-	enableSshd
 	sensorRestart
 }
 
