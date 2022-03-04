@@ -213,36 +213,27 @@ corelightStatus () {
 }
 
 runCorelightAtHome () {
-#	platform=`cat /etc/os-release | grep "ID=debian" | cut -d"=" -f2`
-#	if ! [ $platform = debian ] ; then
-#		echo "[ALERT] This script was written for raspbianOS"
-#		echo "###!!! Load Raspbian and try this again.   !!!###"
-#		echo "###!!! Going to exit from the script now.  !!!###"
-#		echo "[Press Enter]" ; read DUMMY ;
-#		exit
-#	fi
-#
-	if ! [ -x $installPath/$corelightAtHome ]; then
+if ! [ -x $installPath/$corelightAtHome ]; then
 #   This cleans up v1.0.
-        if [ -x /usr/bin/raspi-corelight ]; then
-            sudo rm /usr/bin/raspi-corelight
-        fi
-#  clone the c@h git repo
-        git --version 2>&1 >/dev/null ||
-        { echo >&2 "[Git is not installed. Installing..]";
-            sudo apt -y install git
-        }
-        if sudo git clone --depth 1 -b $gitBranch $gitRepo $installPath ; then
-            echo [Initial CorelightAtHome install...]
-            sudo chmod 755 $installPath/$corelightAtHome
-            sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
-            echo "[Installed Corelight@Home to $installPath ]"
-            echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
-        else
-            echo "[ERROR git clone for $corelightAtHome failed]" | colorize
-            pressEnter
-        fi
+    if [ -x /usr/bin/raspi-corelight ]; then
+        sudo rm /usr/bin/raspi-corelight
     fi
+#  clone the c@h git repo
+    git --version 2>&1 >/dev/null ||
+    { echo >&2 "[Git is not installed. Installing..]";
+        sudo apt -y install git
+    }
+    if sudo git clone --depth 1 -b $gitBranch $gitRepo $installPath ; then
+        echo [Initial CorelightAtHome install...]
+        sudo chmod 755 $installPath/$corelightAtHome
+        sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
+        echo "[Installed Corelight@Home to $installPath ]"
+        echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
+    else
+        echo "[ERROR git clone for $corelightAtHome failed]" | colorize
+        pressEnter
+    fi
+fi
 
 # Launch menu if everything checks out
     if [[ -x /usr/bin/$corelight ]] ; then
@@ -251,7 +242,7 @@ runCorelightAtHome () {
         if [[ ! -x /usr/bin/$corelight ]] ; then
             echo "[Finishing Corelight@Home installation ]" | colorize --green
             setupRepo ;
-#            sudo apt -y install ntp
+            sudo apt install -y ntp
             installCorelight
             echo "[Launching Corelight@Home.  Run Quick Config (option 6) to finish initial configuration.]" | colorize --green
             pressEnter
@@ -466,7 +457,6 @@ setupHumio () {
 	echo "";
     humioToken="" ;
 	humioHecUrl=${humioHecUrl:-https://cloud.community.humio.com/services/collector};
-#    splunkPrefix=${splunkPrefix:-corelight_};
 	echo "[Please enter Humio URL (Default=https://cloud.community.humio.com)]:" ;
 	echo "[Enter https://cloud.community.hummio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read humioHecUrl ;
 	echo "[Please enter Humio API token]:" ; read humioToken ;
@@ -697,7 +687,7 @@ enableNtp () {
         if [ "$checkNtp" == "installed" ]; then
             sudo systemctl start ntp
         else
-            sudo apt -y install ntp
+            sudo apt-get -y install ntp
             sudo systemctl start ntp
         fi
         echo "$selection complete."
