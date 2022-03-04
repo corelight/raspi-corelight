@@ -506,7 +506,7 @@ setupSplunk () {
 	    sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$splunkHecUrl|" "$corelightCfg";
 	    sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
 	    sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tF|" "$corelightCfg";
-        sudo sed -i -e "s|.*Corelight::hec_sourcetype_prefix|Corelight::hec_sourcetype_prefix\t${splunkPrefix:-corelight_}|" "$corelightCfg";
+        sudo sed -i -e "s|.*Corelight::hec_sourcetype_prefix|Corelight::hec_sourcetype_prefix\t$splunkPrefix|" "$corelightCfg";
         sensorRestart ;
     else
         echo
