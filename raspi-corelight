@@ -503,12 +503,10 @@ setupSplunk () {
 	echo "[http://<IP>:8088/services/collector/event]:" ; read splunkHecUrl;
 	echo "[Please enter Splunk API token]:" ; read splunkToken ;
     echo "[Please enter prefix corelight_]:" ; read splunkPrefix ;
-#    splunkPrefix=${splunkPrefix:-corelight_}
-	echo ""
+	echo "----------"
     echo "New Export target is [$splunkHecUrl/services/collector]";
     echo "New Export token is  [$splunkToken];"
     echo "New Export enable is [$splunkEnabledStatus]";
-    #
     echo "New Export prefix is [$splunkPrefix]";
     echo ""
     read -p "Accept Configuration (y/n): " acceptConfig
@@ -518,7 +516,6 @@ setupSplunk () {
 	    sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
 	    sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tF|" "$corelightCfg";
         sudo sed -i -e "s|.*Corelight::hec_sourcetype_prefix|Corelight::hec_sourcetype_prefix\t$splunkPrefix|" "$corelightCfg";
-#        echo "[Press Enter to Continue]" ; read DUMMY ;
         sensorRestart ;
     else
         echo
@@ -562,14 +559,15 @@ quickConfig () {
 		ANSWER1=""
 		echo "Configure Splunk HEC Export? (y/n):" ; read ANSWER1 ;
 		if [ $ANSWER1 = y ]; then
-			splunkHecUrl=""
-			splunkToken=""
-			echo "[Please enter Splunk URL]:" ;
-			echo "[http://<IP>:8088/services/collector/event]:" ; read splunkHecUrl;
-			echo "[Please enter Splunk API token]:" ; read splunkToken ;
-			sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$splunkToken|" "$corelightCfg";
-			sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$splunkHecUrl|" "$corelightCfg";
-			sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
+#			splunkHecUrl=""
+#			splunkToken=""
+#			echo "[Please enter Splunk URL]:" ;
+#			echo "[http://<IP>:8088/services/collector/event]:" ; read splunkHecUrl;
+#			echo "[Please enter Splunk API token]:" ; read splunkToken ;
+#			sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$splunkToken|" "$corelightCfg";
+#			sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$splunkHecUrl|" "$corelightCfg";
+#			sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
+            setupSplunk
 		fi
 	fi
 	setupRepo
