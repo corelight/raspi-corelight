@@ -498,10 +498,11 @@ setupSplunk () {
 	echo "";
     splunkToken="" ;
 	splunkHecUrl="" ;
-	echo "[Please enter Splunk URL]:" ;
+    echo "[Please enter Splunk URL]:" ;
 	echo "[http://<IP>:8088/services/collector/event]:" ; read splunkHecUrl;
 	echo "[Please enter Splunk API token]:" ; read splunkToken ;
     echo "[Please enter prefix corelight_]:" ; read splunkPrefix ;
+    splunkPrefix=${splunkPrefix:-corelight_}
 	echo ""
     echo "New Export target is [$splunkHecUrl/services/collector]";
     echo "New Export token is  [$splunkToken];"
