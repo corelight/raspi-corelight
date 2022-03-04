@@ -468,7 +468,7 @@ setupHumio () {
     read -p "Accept Configuration (y/n): " acceptConfig
     if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
 	    sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$humioToken|" "$corelightCfg";
-	    sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t$humioHecUrl/services/collector|" "$corelightCfg";
+	    sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t${humioHecUrl:-https://cloud.community.humio.com/services/collector}/services/collector|" "$corelightCfg";
 	    sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
 	    sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tT|" "$corelightCfg";
 	    sensorRestart ;
