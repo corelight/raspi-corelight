@@ -228,6 +228,10 @@ runCorelightAtHome () {
             sudo rm /usr/bin/raspi-corelight
         fi
 #  clone the c@h git repo
+        git --version 2>&1 >/dev/null ||
+        { echo >&2 "[Git is not installed. Installing..]";
+            sudo apt -y install git
+        }
         if sudo git clone --depth 1 -b $gitBranch $gitRepo $installPath ; then
             echo [Initial CorelightAtHome install...]
             sudo chmod 755 $installPath/$corelightAtHome
