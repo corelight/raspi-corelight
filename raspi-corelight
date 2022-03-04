@@ -461,7 +461,7 @@ setupHumio () {
 	echo "[Enter https://cloud.community.hummio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read humioHecUrl ;
 	echo "[Please enter Humio API token]:" ; read humioToken ;
     echo ""
-    echo "New Export target is [${humioHecUrl:-https\://cloud.community.humio.com/services/collector}]";
+    echo "New Export target is [${humioHecUrl:-https://cloud.community.humio.com/services/collector}]";
     echo "New Export token is  [$humioToken];"
     echo "New Export enable is [T]";
     echo ""
