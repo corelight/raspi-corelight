@@ -531,7 +531,7 @@ quickConfig () {
 	echo "# This is a quick config walk-through and will restart    #"
 	echo "# the Corelight Sensor software. Completing this wizard   #"  
 	echo "# should provide a running Corelight sensor with export   #"
-	echo "#	to Humio Cloud or Splunk HEC:HTTP.                      #"	
+	echo "# to Humio Cloud or Splunk HEC:HTTP.                      #"	
 	echo "#                                                         #"	
 	echo "# The following is required to complete setup:            #"
 	echo "#  -Monitor Interface (Probably eth0)                     #"
