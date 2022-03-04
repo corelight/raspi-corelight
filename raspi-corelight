@@ -438,7 +438,8 @@ idaptive () {
 setupRepo () {
     clear ; 
     echo "[Setting up Authenticated repository for corelight-softsensor.  Downloading Public Key....]";
-    wget -qO - https://pkgs.corelight.com/signing.pub | sudo apt-key add -;
+#    wget -qO - https://pkgs.corelight.com/signing.pub | sudo apt-key add -;
+    wget -qO - https://pkgs.corelight.com/signing.pub | sudo gpg --dearmor;
     echo "[This requires your iDaptive Username and Password. ]";
     sudo touch /etc/apt/sources.list.d/corelight-softsensor.list;
     echo "deb [arch=arm64] https://pkgs.corelight.com/deb/stable `lsb_release -sc` main" | sudo tee /etc/apt/sources.list.d/corelight-softsensor.list 1> /dev/null;
@@ -507,7 +508,7 @@ setupSplunk () {
     echo "New Export target is [$splunkHecUrl/services/collector]";
     echo "New Export token is  [$splunkToken];"
     echo "New Export enable is [$splunkEnabledStatus]";
-    echo "New Export prefix is [$splunkPrefix]";
+    echo "New Export prefix is [${splunkPrefix:-corelight_}]";
     echo ""
     read -p "Accept Configuration (y/n): " acceptConfig
     if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
