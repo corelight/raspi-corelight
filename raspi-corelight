@@ -465,8 +465,8 @@ setupHumio () {
 	echo "Export enable is [$HUMIO_ENABLE_STATUS]";
 	echo "";
     HUMIO_TOKEN="" ;
-	HUMIO_HECURL="${HUMIO_HECURL:=https://cloud.community.humio.com}";
-	echo "[Please enter Humio URL]:" ;
+	HUMIO_HECURL="${HUMIO_HECURL:-https://cloud.community.humio.com}";
+	echo "[Please enter Humio URL (Default:https://cloud.community.humio.com)]:" ;
 	echo "[Enter https://cloud.community.hummio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read HUMIO_HECURL ;
 	echo "[Please enter Humio API token]:" ; read HUMIO_TOKEN ;
 
@@ -503,7 +503,7 @@ setupSplunk () {
     echo "[Please enter Splunk URL]:" ;
 	echo "[http://<IP>:8088/services/collector/event]:" ; read splunkHecUrl;
 	echo "[Please enter Splunk API token]:" ; read splunkToken ;
-    echo "[Please enter prefix corelight_]:" ; read splunkPrefix ;
+    echo "[Please enter prefix (Default: corelight_)]:" ; read splunkPrefix ;
 	echo "----------"
     echo "New Export target is [$splunkHecUrl/services/collector]";
     echo "New Export token is  [$splunkToken];"
