@@ -490,7 +490,7 @@ fi
 setupSplunk () {
 	SPLUNK_ENABLE_STATUS=`grep Corelight\:\:hec_enable $corelightCfg | awk '{print $2}'`
 	splunkHecUrl=`grep Corelight\:\:hec_url $corelightCfg | awk '{print $2}'`
-    splunkPrefix=`grep Corelight\:\:hec_sourcetype_prefix $corelightCfg '{print $2}'`
+    splunkPrefix=`grep Corelight\:\:hec_sourcetype_prefix $corelightCfg | awk '{print $2}'`
 	echo "Current Config:";
 	echo "Export target is [$splunkHecUrl]";
 	echo "Export enable is [$SPLUNK_ENABLE_STATUS]";
