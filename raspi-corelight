@@ -213,11 +213,20 @@ corelightStatus () {
 }
 
 runCorelightAtHome () {
+AARCH64=`uname -m`
+if [[ ! "$AARCH64" == "aarch64" ]] ; then
+    echo ### This is not a 64 bit architecture.  Please load Raspbian OS 64bit or Rasbian Lit Os 64bit ###" | colorize -red ;
+    echo "[Press Enter]" | colorize; read DUMMY ;
+    exit 0
+fi
+
+
 if ! [ -x $installPath/$corelightAtHome ]; then
 #   This cleans up v1.0.
     if [ -x /usr/bin/raspi-corelight ]; then
         sudo rm /usr/bin/raspi-corelight
     fi
+
 #  clone the c@h git repo
     git --version 2>&1 >/dev/null ||
     { echo >&2 "[Git is not installed. Installing..]";
@@ -402,7 +411,7 @@ denyEth0 () {
     	if ! grep -q '^denyinterfaces eth0' /etc/dhcpcd.conf ; then
     		echo 'denyinterfaces eth0' | sudo tee -a /etc/dhcpcd.conf >/dev/null
     		sudo more /etc/dhcpcd.conf
-    		echo "[Press Enter]" | colorize; read DUMMY
+    		echo "[Press Enter]" | colorize; read DUMMY ;
 		    echo "auto eth0" | sudo tee -a /etc/network/interfaces ;
 		    echo "iface eth0 inet manual" | sudo tee -a /etc/network/interfaces ;
 		    echo "up ifconfig 0.0.0.0 up" | sudo tee -a /etc/network/interfaces ;
