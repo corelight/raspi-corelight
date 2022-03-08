@@ -216,7 +216,7 @@ runCorelightAtHome () {
 AARCH64=`uname -m`
 if [[ ! "$AARCH64" == "aarch64" ]] ; then
     echo "### ------------------------------------------------------------------------------------------ ###" | colorize --red ;
-    echo "### This is not a 64 bit architecture.  Please load Raspbian OS 64bit or Rasbian Lite Os 64bit ###" | colorize --red ;
+    echo "### This is not a 64 bit architecture.  Please load Raspbian OS 64bit or Rasbian Lite OS 64bit ###" | colorize --red ;
     echo "### ------------------------------------------------------------------------------------------ ###" | colorize --red ;
     echo "[Press Enter]" | colorize; read DUMMY ;
     exit 0
