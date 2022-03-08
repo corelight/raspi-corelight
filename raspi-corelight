@@ -2,7 +2,7 @@
 # source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/devel/raspi-corelight)
 
 
-corelightAtHomeVer="2.1"
+corelightAtHomeVer="3.0"
 corelight="corelight-softsensor"
 corelightAtHome="raspi-corelight"
 gitRepo="https://github.com/corelight/raspi-corelight.git"
