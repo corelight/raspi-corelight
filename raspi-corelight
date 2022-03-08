@@ -462,7 +462,7 @@ setupHumio () {
 	echo "[Please enter Humio API token]:" ; read humioToken ;
     echo ""
     echo "New Export target is [${humioHecUrl:-https://cloud.community.humio.com/services/collector}]";
-    echo "New Export token is  [$humioToken];"
+    echo "New Export token is  [$humioToken]";
     echo "New Export enable is [T]";
     echo ""
     read -p "Accept Configuration (y/n): " acceptConfig
