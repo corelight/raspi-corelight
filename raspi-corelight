@@ -456,7 +456,7 @@ setupHumio () {
 	echo "Export enable is [$humioEnabledStatus]";
 	echo "";
     humioToken="" ;
-	humioHecUrl=${humioHecUrl:-https://cloud.community.humio.com/services/collector};
+    humioHecUrl="";
 	echo "[Please enter Humio URL (Default=https://cloud.community.humio.com)]:" ;
 	echo "[Enter https://cloud.community.hummio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read humioHecUrl ;
 	echo "[Please enter Humio API token]:" ; read humioToken ;
@@ -468,9 +468,10 @@ setupHumio () {
     read -p "Accept Configuration (y/n): " acceptConfig
     if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
 	    sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$humioToken|" "$corelightCfg";
-	    sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t${humioHecUrl:-https://cloud.community.humio.com/services/collector}/services/collector|" "$corelightCfg";
+	    sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t${humioHecUrl:-https://cloud.community.humio.com}/services/collector|" "$corelightCfg";
 	    sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
 	    sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tT|" "$corelightCfg";
+        sudo sed -i -e "s|.*Corelight::hec_sourcetype_prefix|Corelight::hec_sourcetype_prefix\t|" "$corelightCfg";
 	    sensorRestart ;
     else
         echo
