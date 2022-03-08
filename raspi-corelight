@@ -377,6 +377,7 @@ installLicense () {
 			echo $license | sudo tee $licenseFile ;
 	fi
 }
+
 enableSshd () {
 	echo "[Enabling SSHD]" | colorize --cyan;
 	sudo systemctl enable ssh ;
