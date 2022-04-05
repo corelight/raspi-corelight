@@ -470,7 +470,7 @@ setupHumio () {
     humioToken="" ;
     humioHecUrl="";
 	echo "[Please enter Humio URL (Default=https://cloud.community.humio.com)]:" ;
-	echo "[Enter https://cloud.community.hummio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read humioHecUrl ;
+	echo "[Enter https://cloud.community.humio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read humioHecUrl ;
 	echo "[Please enter Humio API token]:" ; read humioToken ;
     echo ""
     echo "New Export target is [${humioHecUrl:-https://cloud.community.humio.com/services/collector}]";
