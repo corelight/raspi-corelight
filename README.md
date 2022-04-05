@@ -1,5 +1,7 @@
 # Configure the Pi to Run Corelight Software Sensor
 
+### For official Raspberry Pi OS (32bit)
+
 The Corelight Software Sensor is a 64-bit application, so we have created a configuration tool raspi-corelight) to facilitate that kernel upgrade and perform initial configuration of the sensor.  To install and run this tool, perform the following from a terminal window on your Raspberry Pi:
 
 Install raspi-corelight from Github by executing the following (all on one line):
