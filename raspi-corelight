@@ -458,7 +458,7 @@ setupRepo () {
 }
 
 editCorelightCfg () {
-	$editor $corelightCfg
+	sudo $editor $corelightCfg
 }
 setupHumio () {
 	humioEnabledStatus=`grep Corelight\:\:hec_enable $corelightCfg | awk '{print $2}'`
