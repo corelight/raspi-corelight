@@ -10,7 +10,7 @@ The Corelight Software Sensor is a 64-bit application, so we have created a conf
 
 Install `raspi-corelight` from Github by executing the following (all on one line):
 
-     source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/raspi64/raspi-corelight)
+     source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/main/raspi-corelight)
 
 Execute the script with the following command:
 
