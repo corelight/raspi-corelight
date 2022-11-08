@@ -1,16 +1,16 @@
-# Corelight@Home (raspi-corelight v3.0)
+# Corelight@Home (raspi-corelight v3.1)
 
 ### Configure the Pi to Run Corelight Software Sensor 
 
-The Corelight Software Sensor is a 64-bit application, so we have created a configuration tool raspi-corelight) to perform initial configuration of the sensor and Raspberry Pi OS.  To install and run this tool, perform the following from a terminal window on your Raspberry Pi:
+The Corelight Software Sensor is a 64-bit application, so we have created a configuration tool `raspi-corelight` to perform initial configuration of the sensor and Raspberry Pi OS.  To install and run this tool, perform the following from a terminal window on your Raspberry Pi:
 
 **For official Raspberry Pi OS (64bit)**
 
 
 
-Install raspi-corelight from Github by executing the following (all on one line):
+Install `raspi-corelight` from Github by executing the following (all on one line):
 
-     source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/raspi64/raspi-corelight)
+     source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/main/raspi-corelight)
 
 Execute the script with the following command:
 

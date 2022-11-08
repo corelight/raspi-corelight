@@ -1,12 +1,12 @@
 #!/bin/bash
-# source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/raspi64/raspi-corelight)
+# source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/main/raspi-corelight)
 
 
-corelightAtHomeVer="3.0"
+corelightAtHomeVer="3.1"
 corelight="corelight-softsensor"
 corelightAtHome="raspi-corelight"
 gitRepo="https://github.com/corelight/raspi-corelight.git"
-gitBranch="raspi64"
+gitBranch="main"
 installPath="/opt/raspi-corelight"
 logo="Corelight@Home Software Sensor Menu"
 licenseFile="/etc/corelight-license.txt"
@@ -41,7 +41,7 @@ reSet=$(tput sgr0)
 if [[ $# -eq 0 ]]; then
     while read -r dataIn || [[ -n "$dataIn" ]]; do
         case $dataIn in
-    
+
             # Exact matches
 	    active*|enabled|*running*|*ENTER*|*Enter*|*Enabling*|*y/n*|*Expires*)
                 echo "$green$dataIn$reSet"
@@ -52,12 +52,12 @@ if [[ $# -eq 0 ]]; then
             disabled|unknown|*inactive*|*dead*)
                 echo "$red$dataIn$reSet"
             ;;
-        
+
             # Lines containing certain words (error, critical, warning, etc.)
 	    *error*|*ERROR*|*Error*|*cannot*|*CANNOT*|*Cannot*|*can\'t*|*CAN\'T*|*Can\'t*|*critical*|*CRITICAL*|*Critical*|*warning*|*WARNING*|*Warning*|*fail*|*FAIL*|*Fail*|*unsuccessful*|*UNSUCCESSFUL*|*Unsuccessful*|*abnormal*|*ABNORMAL*|*Abnormal*)
                 echo "$red$dataIn$reSet"
-            ;;          
-        
+            ;;
+
             # Reset settings for all else
             *)
                 echo "$reSet$dataIn"
@@ -67,7 +67,7 @@ if [[ $# -eq 0 ]]; then
 else
     while [[ $# -gt 0 ]]; do
         key="$1"
-        
+
         # Manual color settings via arguments
         case $key in
             --red)
@@ -221,6 +221,14 @@ if [[ ! "$AARCH64" == "aarch64" ]] ; then
     echo "[Press Enter]" | colorize; read DUMMY ;
     exit 0
 fi
+    # Test for old package repo, re-run setup to add new repo, then remove old repo
+    if [ -f /etc/apt/sources.list.d/corelight-softsensor.list ]; then
+        echo "[Removing old package repository]"
+        sudo rm /etc/apt/sources.list.d/corelight-softsensor.list
+        echo "[Re-running repository setup to add new package repository]"
+        setupRepo
+    fi
+
 
 
 if ! [ -x $installPath/$corelightAtHome ]; then
@@ -249,6 +257,14 @@ fi
 # Launch menu if everything checks out
     if [[ -x /usr/bin/$corelight ]] ; then
         mainMenu
+        elif [[ "$AARCH64" == "aarch64" ]] && [[ ! -x /usr/bin/$corelight ]] ; then
+                   echo "[Finishing Corelight@Home installation ]" | colorize --green
+                   setupRepo ;
+                   sudo apt -y install ntp
+                   installCorelight
+                   echo "[Launching Corelight@Home.  Run Quick Config (option 6) to finish initial configuration.]" | colorize --green
+                   pressEnter
+                   mainMenu
     else
         if [[ ! -x /usr/bin/$corelight ]] ; then
             echo "[Finishing Corelight@Home installation ]" | colorize --green
@@ -260,6 +276,7 @@ fi
             mainMenu
         fi
     fi
+
 }
 
 # function to update Corelight@Home
@@ -334,7 +351,7 @@ healthCheck () {
 	ping -c 3 www.google.com
 	echo
 	echo "[### CPU & GPU Temperature ###]"
-	CPU_TEMP=`cat /sys/class/thermal/thermal_zone0/temp` 
+	CPU_TEMP=`cat /sys/class/thermal/thermal_zone0/temp`
 	echo "$(date) @ $(hostname)"
 	echo "-------------------------------------------"
 	echo "GPU => $(/opt/vc/bin/vcgencmd measure_temp)"
@@ -359,7 +376,7 @@ defineSniff () {
         echo
         echo "Cancelling Configuration Change"
         echo
-    fi    
+    fi
 
 }
 
@@ -439,22 +456,27 @@ idaptive () {
 }
 
 setupRepo () {
-    clear ; 
-    echo "[Setting up Authenticated repository for corelight-softsensor.  Downloading Public Key....]";
-    wget -qO - https://pkgs.corelight.com/signing.pub | sudo apt-key add -;
-#    wget -qO - https://pkgs.corelight.com/signing.pub | sudo gpg --dearmor;
-    echo "[This requires your iDaptive Username and Password. ]";
-    sudo touch /etc/apt/sources.list.d/corelight-softsensor.list;
-    echo "deb [arch=arm64] https://pkgs.corelight.com/deb/stable `lsb_release -sc` main" | sudo tee /etc/apt/sources.list.d/corelight-softsensor.list 1> /dev/null;
-    if [ ! -f /etc/apt/auth.conf.d/corelight-softsensor.conf ]; then
-        idaptive
-    else
-        read -p "[iDaptive password has been set.  Would you like to reconfigure? (y/N)" acceptConfig
-        if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-            idaptive
-            sudo apt update
-        fi
-    fi
+  clear ;
+  # Install PackageCloud prereqs
+  echo "[Installing PackageCloud prerequisites (debian-archive-keyring, curl, gnupg, apt-transport-https)]";
+  sudo apt install debian-archive-keyring curl gnupg apt-transport-https -y
+  # Download and run the Debian setup script for PackageCloud
+  echo "[Downloading and executing PackageCloud setup script]";
+  curl -s https://packagecloud.io/install/repositories/corelight/stable/script.deb.sh | sudo bash
+
+  # Commented out 2022-10-12 because repo is not authenticated yet
+  # echo "[This requires your iDaptive Username and Password. ]";
+  # if [ ! -f /etc/apt/auth.conf.d/corelight-softsensor.conf ]; then
+  #     #idaptive
+  #     # Added to preserve the structure
+  #     : #NOP
+  # else
+  #     read -p "[iDaptive password has been set.  Would you like to reconfigure? (y/N)" acceptConfig
+  #     if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
+  #         idaptive
+  #         sudo apt update
+  #     fi
+  # fi
 }
 
 editCorelightCfg () {
@@ -489,7 +511,7 @@ setupHumio () {
         echo
         echo "Cancelling Configuration Change"
         echo
-fi    
+fi
 }
 setupSplunk () {
 	splunkEnabledStatus=`grep Corelight\:\:hec_enable $corelightCfg | awk '{print $2}'`
@@ -525,7 +547,7 @@ setupSplunk () {
         echo
         echo "Cancelling Configuration Change"
         echo
-    fi    
+    fi
 }
 
 # Quick Config function.  The idea for this function is to have a working config by the end and sensor started.
@@ -533,10 +555,10 @@ quickConfig () {
 	clear
 	echo "###########################################################"
 	echo "# This is a quick config walk-through and will restart    #"
-	echo "# the Corelight Sensor software. Completing this wizard   #"  
+	echo "# the Corelight Sensor software. Completing this wizard   #"
 	echo "# should provide a running Corelight sensor with export   #"
-	echo "# to Humio Cloud or Splunk HEC:HTTP.                      #"	
-	echo "#                                                         #"	
+	echo "# to Humio Cloud or Splunk HEC:HTTP.                      #"
+	echo "#                                                         #"
 	echo "# The following is required to complete setup:            #"
 	echo "#  -Monitor Interface (Probably eth0)                     #"
 	echo "#  -Valid Corelight License for Software Sensor           #"
@@ -546,13 +568,13 @@ quickConfig () {
 	echo "###########################################################"
 	echo ""
 	echo "[Press Enter to Continue]" ; read DUMMY ;
-	
+
 	defineSniff
 	installLicense
     setupRepo
 	enableSshd
 	ANSWER=""
-	echo "Configre Humio HEC Export? (y/n):" ; read ANSWER ; 
+	echo "Configre Humio HEC Export? (y/n):" ; read ANSWER ;
 	if [ $ANSWER = y ]; then
         setupHumio
 	else
@@ -590,7 +612,7 @@ echo
 read -p "Accept Configuration (y/n): " acceptConfig
 
 if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-    
+
     sudo timedatectl set-time "$myDate"
     echo "$selection complete."
     echo
@@ -598,7 +620,7 @@ else
     echo
     echo "Cancelling Configuration Change"
     echo
-fi     
+fi
 }
 
 setTime () {
@@ -692,9 +714,9 @@ enableNtp () {
     echo
     echo "$selection" | colorize --underline
     echo
-    
+
     read -p "Accept Configuration (y/n): " acceptConfig
-    
+
     if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
         checkNtp=`dpkg -s ntp | grep Status | awk '{ print $4}'`
         if [ "$checkNtp" == "installed" ]; then
@@ -717,9 +739,9 @@ disableNtp () {
     echo
     echo "$selection" | colorize --underline
     echo
-    
+
     read -p "Accept Configuration (y/n): " acceptConfig
-    
+
     if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
         sudo systemctl stop ntp
         echo "$selection complete."
@@ -751,18 +773,18 @@ echo "Confirm new Hostname and Domain: $newHostname.$newDomain"
 read -p "Accept Configuration (y/n): " acceptConfig
 
 if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-    
+
     sudo hostnamectl set-hostname "$newHostname.$newDomain"
     currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " " | colorize --cyan)
     PS3="[$currentHostname] Selection: "
-    
+
     echo "$selection complete."
     echo
 else
     echo
     echo "Cancelling Configuration Change"
     echo
-fi     
+fi
 }
 
 # Main Menu
@@ -774,7 +796,7 @@ mainMenu () {
     echo
     echo "$menuPath" | colorize --reverse --cyan
     echo
-    
+
     select selection in "System" "Access" "Export" "Updates" "Maintain" "Quick Config" "Logout" "Exit to shell"
     do
         case "$selection" in
@@ -788,12 +810,12 @@ mainMenu () {
             ;;
             "Export")
                 exportMenu
-                menuDisplay   
+                menuDisplay
             ;;
        	    "Updates")
 	       updatesMenu
 	       menuDisplay
-	    ;; 
+	    ;;
 	    "Maintain")
 	       maintainMenu
                menuDisplay
@@ -823,7 +845,7 @@ accessMenu () {
    echo
    echo "$menuPath" | colorize --reverse --cyan
    echo
-	
+
     select selection in "BACK" "Enable SSHD" "Remove IP eth0"
     do
        	case "$selection" in
@@ -832,7 +854,7 @@ accessMenu () {
 	       menuDisplay
                ;;
            "Remove IP eth0")
-	       denyEth0 
+	       denyEth0
 	       menuDisplay
 	       ;;
            "BACK")
@@ -887,7 +909,7 @@ systemMenu () {
     echo
     echo "$menuPath" | colorize --reverse --cyan
     echo
-    
+
     select selection in "BACK" "Show System INFO" "Date and Time" "Configure Hostname"
     do
         case "$selection" in
@@ -897,11 +919,11 @@ systemMenu () {
 	    ;;
             "Date and Time")
                 dateAndTimeMenu
-                menuDisplay         
+                menuDisplay
             ;;
             "Configure Hostname")
                 configureHostname
-                menuDisplay           
+                menuDisplay
             ;;
             "BACK")
                 menuPath="Sensor"
@@ -975,9 +997,9 @@ maintainMenu () {
     echo "$menuPath" | colorize --reverse --cyan
     echo
 
-    select selection in "BACK" "Restart Sensor" "Stop Sensor" "Edit Corelight Config" "Define Monitor Interface" "Install License" "Install Corelight" "Health Check" "Setup Corelight Installation Credentials" "Interface Stats" 
+    select selection in "BACK" "Restart Sensor" "Stop Sensor" "Edit Corelight Config" "Define Monitor Interface" "Install License" "Install Corelight" "Health Check" "Setup Corelight Installation Credentials" "Interface Stats"
     do
-        case "$selection" in 
+        case "$selection" in
             "Restart Sensor")
                 sensorRestart
                 menuDisplay
@@ -1025,3 +1047,4 @@ maintainMenu () {
 
 # start the menu
 runCorelightAtHome
+
