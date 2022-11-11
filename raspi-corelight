@@ -447,13 +447,13 @@ denyEth0 () {
 }
 
 # Setup iDaptive authentication File
-idaptive () {
-    echo "machine pkgs.corelight.com/deb/stable" | sudo tee /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
-    read -p "[Please Enter iDaptive Username]:" REPO_USERNAME;
-    echo " login $REPO_USERNAME" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
-    read -p "[Please Enter iDaptive Password]:" REPO_PASSWORD;
-    echo " password $REPO_PASSWORD" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
-}
+#idaptive () {
+#    echo "machine pkgs.corelight.com/deb/stable" | sudo tee /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+#    read -p "[Please Enter iDaptive Username]:" REPO_USERNAME;
+#    echo " login $REPO_USERNAME" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+#    read -p "[Please Enter iDaptive Password]:" REPO_PASSWORD;
+#    echo " password $REPO_PASSWORD" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+#}
 
 setupRepo () {
   clear ;
