@@ -2,7 +2,7 @@
 # source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/main/raspi-corelight)
 
 
-corelightAtHomeVer="3.1"
+corelightAtHomeVer="3.2"
 corelight="corelight-softsensor"
 corelightAtHome="raspi-corelight"
 gitRepo="https://github.com/corelight/raspi-corelight.git"
@@ -462,7 +462,7 @@ setupRepo () {
   sudo apt install debian-archive-keyring curl gnupg apt-transport-https -y
   # Download and run the Debian setup script for PackageCloud
   echo "[Downloading and executing PackageCloud setup script]";
-  curl -s https://packagecloud.io/install/repositories/corelight/stable/script.deb.sh | sudo bash
+  curl -s https://packages.corelight.com/install/repositories/corelight/stable/script.deb.sh | sudo bash
 
   # Commented out 2022-10-12 because repo is not authenticated yet
   # echo "[This requires your iDaptive Username and Password. ]";
