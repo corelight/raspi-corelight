@@ -383,6 +383,7 @@ installCorelight () {
 	   echo "[Copying sample Corelight SoftSensor config to $corelightCfg]";
 	   sudo cp /etc/corelight-softsensor.conf.example $corelightCfg;
 	fi
+    sudo systemctl enable corelight-softsensor
 }
 
 installLicense () {
