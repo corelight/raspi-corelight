@@ -325,6 +325,7 @@ sensorStatus () {
 # Restart Corelight Sensor
 sensorRestart () {
 	clear ; echo [Restarting Corelight...] ; sudo systemctl restart $corelight ; wait 4
+    sudo systemctl enable corelight-softsensor
 }
 
 # Stop Corelight Sensor
