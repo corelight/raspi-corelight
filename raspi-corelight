@@ -1014,7 +1014,7 @@ maintainMenu () {
 		        healthCheck
 		        menuDisplay
 	        ;;
-	        "Setup Corelight Installation Credentials")
+	        "Set Up Corelight Package Repository")
 		        setupRepo
 		        menuDisplay
 	        ;;
