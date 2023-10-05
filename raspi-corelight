@@ -2,7 +2,7 @@
 # source <( curl https://raw.githubusercontent.com/corelight/raspi-corelight/main/raspi-corelight)
 
 
-corelightAtHomeVer="3.1"
+corelightAtHomeVer="3.2"
 corelight="corelight-softsensor"
 corelightAtHome="raspi-corelight"
 gitRepo="https://github.com/corelight/raspi-corelight.git"
@@ -15,134 +15,132 @@ editor="nano"
 
 
 colorize () {
+    # Reads from stdin and if no argument then automatically colors certain words or lines
+    # containing certain words.
+    # With arguments the input is colored as desired.
+    #
+    # Usage:
+    # colorize {--red|--yellow|--green|--blue|--bold|--reverse|--underline|--reset}
 
-# Reads from stdin and if no argument then automatically colors certain words or lines
-# containing certain words.
-# With arguments the input is colored as desired.
-#
-# Usage:
-# colorize {--red|--yellow|--green|--blue|--bold|--reverse|--underline|--reset}
+    local IFS=
+    clr=
+    bld=
+    rvs=
+    und=
+    red=$(tput setaf 1)
+    yellow=$(tput setaf 3)
+    green=$(tput setaf 2)
+    blue=$(tput setaf 4)
+    cyan=$(tput setaf 6)
+    bold=$(tput bold)
+    reverse=$(tput smso)
+    underline=$(tput smul)
+    reSet=$(tput sgr0)
 
-local IFS=
-clr=
-bld=
-rvs=
-und=
-red=$(tput setaf 1)
-yellow=$(tput setaf 3)
-green=$(tput setaf 2)
-blue=$(tput setaf 4)
-cyan=$(tput setaf 6)
-bold=$(tput bold)
-reverse=$(tput smso)
-underline=$(tput smul)
-reSet=$(tput sgr0)
+    if [[ $# -eq 0 ]]; then
+        while read -r dataIn || [[ -n "$dataIn" ]]; do
+            case $dataIn in
 
-if [[ $# -eq 0 ]]; then
-    while read -r dataIn || [[ -n "$dataIn" ]]; do
-        case $dataIn in
+                # Exact matches
+            active*|enabled|*running*|*ENTER*|*Enter*|*Enabling*|*y/n*|*Expires*)
+                    echo "$green$dataIn$reSet"
+                ;;
+                activating)
+                    echo "$yellow$dataIn$reSet"
+                ;;
+                disabled|unknown|*inactive*|*dead*)
+                    echo "$red$dataIn$reSet"
+                ;;
 
-            # Exact matches
-	    active*|enabled|*running*|*ENTER*|*Enter*|*Enabling*|*y/n*|*Expires*)
-                echo "$green$dataIn$reSet"
-            ;;
-            activating)
-                echo "$yellow$dataIn$reSet"
-            ;;
-            disabled|unknown|*inactive*|*dead*)
-                echo "$red$dataIn$reSet"
-            ;;
+                # Lines containing certain words (error, critical, warning, etc.)
+            *error*|*ERROR*|*Error*|*cannot*|*CANNOT*|*Cannot*|*can\'t*|*CAN\'T*|*Can\'t*|*critical*|*CRITICAL*|*Critical*|*warning*|*WARNING*|*Warning*|*fail*|*FAIL*|*Fail*|*unsuccessful*|*UNSUCCESSFUL*|*Unsuccessful*|*abnormal*|*ABNORMAL*|*Abnormal*)
+                    echo "$red$dataIn$reSet"
+                ;;
 
-            # Lines containing certain words (error, critical, warning, etc.)
-	    *error*|*ERROR*|*Error*|*cannot*|*CANNOT*|*Cannot*|*can\'t*|*CAN\'T*|*Can\'t*|*critical*|*CRITICAL*|*Critical*|*warning*|*WARNING*|*Warning*|*fail*|*FAIL*|*Fail*|*unsuccessful*|*UNSUCCESSFUL*|*Unsuccessful*|*abnormal*|*ABNORMAL*|*Abnormal*)
-                echo "$red$dataIn$reSet"
-            ;;
+                # Reset settings for all else
+                *)
+                    echo "$reSet$dataIn"
+                ;;
+            esac
+        done
+    else
+        while [[ $# -gt 0 ]]; do
+            key="$1"
 
-            # Reset settings for all else
-            *)
-                echo "$reSet$dataIn"
-            ;;
-        esac
-    done
-else
-    while [[ $# -gt 0 ]]; do
-        key="$1"
-
-        # Manual color settings via arguments
-        case $key in
-            --red)
-                clr=$red
-                shift
-            ;;
-            --yellow)
-                clr=$yellow
-                shift
-            ;;
-            --green)
-                clr=$green
-                shift
-            ;;
-            --blue)
-                clr=$blue
-                shift
-            ;;
-            --cyan)
-                clr=$cyan
-                shift
-            ;;
-            --bold)
-                bld=$bold
-                shift
-            ;;
-            --reverse)
-                rvs=$reverse
-                shift
-            ;;
-            --underline)
-                und=$underline
-                shift
-            ;;
-            --reset)
-                clr=$reSet
-                shift
-            ;;
-        esac
-    done
-    while read -r dataIn || [[ -n "$dataIn" ]]; do
-        echo "$und$bld$rvs$clr$dataIn$reSet"
-    done
-fi
+            # Manual color settings via arguments
+            case $key in
+                --red)
+                    clr=$red
+                    shift
+                ;;
+                --yellow)
+                    clr=$yellow
+                    shift
+                ;;
+                --green)
+                    clr=$green
+                    shift
+                ;;
+                --blue)
+                    clr=$blue
+                    shift
+                ;;
+                --cyan)
+                    clr=$cyan
+                    shift
+                ;;
+                --bold)
+                    bld=$bold
+                    shift
+                ;;
+                --reverse)
+                    rvs=$reverse
+                    shift
+                ;;
+                --underline)
+                    und=$underline
+                    shift
+                ;;
+                --reset)
+                    clr=$reSet
+                    shift
+                ;;
+            esac
+        done
+        while read -r dataIn || [[ -n "$dataIn" ]]; do
+            echo "$und$bld$rvs$clr$dataIn$reSet"
+        done
+    fi
 }
 
 # Function to resize the terminal before displaying certain information if tty is a serial console
 resizeTerm () {
+    myTerm=$(tty)
+    if [[ $myTerm == "/dev/ttyS0" ]] || [[ $myTerm == "/dev/ttyS1" ]] ; then
+        old=$(stty -g)
+        stty raw -echo min 0 time 5
 
-myTerm=$(tty)
-if [[ $myTerm == "/dev/ttyS0" ]] || [[ $myTerm == "/dev/ttyS1" ]] ; then
-    old=$(stty -g)
-    stty raw -echo min 0 time 5
+        printf '\0337\033[r\033[999;999H\033[6n\0338' > /dev/tty
+        IFS='[;R' read -r _ rows cols _ < /dev/tty
 
-    printf '\0337\033[r\033[999;999H\033[6n\0338' > /dev/tty
-    IFS='[;R' read -r _ rows cols _ < /dev/tty
+        stty "$old"
+        stty cols "$cols" rows "$rows"
+    fi
+    }
 
-    stty "$old"
-    stty cols "$cols" rows "$rows"
-fi
-}
+    # Menu selection prompt
+    currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " " | colorize --cyan)
+    PS3="[$currentHostname] Selection: "
 
-# Menu selection prompt
-currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " " | colorize --cyan)
-PS3="[$currentHostname] Selection: "
+    # menuPath and menuDisplay
+    menuPath=
 
-# menuPath and menuDisplay
-menuPath=
-
-menuDisplay () {
-    corelightStatus
-    echo
-    echo "$menuPath" | colorize --reverse --cyan
-    echo "Hit ENTER for Menu"
-    echo
+    menuDisplay () {
+        corelightStatus
+        echo
+        echo "$menuPath" | colorize --reverse --cyan
+        echo "Hit ENTER for Menu"
+        echo
 }
 
 pressEnter () {
@@ -150,52 +148,50 @@ pressEnter () {
 }
 
 corelightStat () {
+    myIpStat=
+    myGatewayStat=
+    myDnsStat=
 
-myIpStat=
-myGatewayStat=
-myDnsStat=
+    # Network info
+    myIpStat=$(ip -4 addr list wlan0 | grep inet | cut -f 6 -d " ")
+    srcIp=$(echo $myIpStat | cut -f 1 -d "/")
+    myGatewayStat=$(ip route | grep default | grep wlan0 | cut -f 3 -d " ")
+    myDnsStat=$(grep ^nameserver /etc/resolv.conf | cut -f 2 -d  " ")
 
-# Network info
-myIpStat=$(ip -4 addr list wlan0 | grep inet | cut -f 6 -d " ")
-srcIp=$(echo $myIpStat | cut -f 1 -d "/")
-myGatewayStat=$(ip route | grep default | grep wlan0 | cut -f 3 -d " ")
-myDnsStat=$(grep ^nameserver /etc/resolv.conf | cut -f 2 -d  " ")
+    # Sensor info
+    sensorStat=$(systemctl is-active $corelight | colorize)
+    sensorEnabledStat=$(systemctl is-enabled $corelight | colorize)
+    sensorVersion=`$corelight -v`
 
-# Sensor info
-sensorStat=$(systemctl is-active $corelight | colorize)
-sensorEnabledStat=$(systemctl is-enabled $corelight | colorize)
-sensorVersion=`$corelight -v`
+    # Auto Update info
+    #sysAutoUpdateStat=$(systemctl is-active apt-daily-upgrade.timer | colorize)
+    #sysAutoUpdateEnabledStat=$(systemctl is-enabled apt-daily-upgrade.timer | colorize)
 
-# Auto Update info
-#sysAutoUpdateStat=$(systemctl is-active apt-daily-upgrade.timer | colorize)
-#sysAutoUpdateEnabledStat=$(systemctl is-enabled apt-daily-upgrade.timer | colorize)
+    # System info
+    timezoneStat=$(timedatectl | grep "Time zone:" | cut -f 2 -d ":")
+    ntpEnabledStat=$(systemctl status ntp | grep "Active" | awk '{ print $2 }' | colorize)
+    currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " ")
+    currentDomain=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f2- -d ".")
+    fqdn=$(echo "$currentHostname.$currentDomain" | colorize --cyan)
+    currentUptime=$(uptime | cut -f 2- -d " ")
 
-# System info
-timezoneStat=$(timedatectl | grep "Time zone:" | cut -f 2 -d ":")
-ntpEnabledStat=$(systemctl status ntp | grep "Active" | awk '{ print $2 }' | colorize)
-currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " ")
-currentDomain=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f2- -d ".")
-fqdn=$(echo "$currentHostname.$currentDomain" | colorize --cyan)
-currentUptime=$(uptime | cut -f 2- -d " ")
+    resizeTerm
 
-resizeTerm
+    echo
+    echo "System Status for $fqdn:"
+    echo
+    echo "  $currentUptime"
+    echo "  Timezone: $timezoneStat  (NTP $ntpEnabledStat)"
+    echo
+    printf "  Sensor Service:       %-25s%-25s%-25s\n" "$sensorStat" "$sensorEnabledStat" "v$sensorVersion"
 
-echo
-echo "System Status for $fqdn:"
-echo
-echo "  $currentUptime"
-echo "  Timezone: $timezoneStat  (NTP $ntpEnabledStat)"
-echo
-printf "  Sensor Service:       %-25s%-25s%-25s\n" "$sensorStat" "$sensorEnabledStat" "v$sensorVersion"
-
-#printf "  System Auto-Update:   %-25s%-25s%-25s\n" "$sysAutoUpdateStat" "$sysAutoUpdateEnabledStat" "$sysAutoUpdateConfig"
-echo
-echo "Management Interface:"
-echo
-echo "  IP:         " $myIpStat
-echo "  Gateway:    " $myGatewayStat
-echo "  DNS:        " $myDnsStat
-
+    #printf "  System Auto-Update:   %-25s%-25s%-25s\n" "$sysAutoUpdateStat" "$sysAutoUpdateEnabledStat" "$sysAutoUpdateConfig"
+    echo
+    echo "Management Interface:"
+    echo
+    echo "  IP:         " $myIpStat
+    echo "  Gateway:    " $myGatewayStat
+    echo "  DNS:        " $myDnsStat
 }
 
 corelightStatus () {
@@ -213,14 +209,16 @@ corelightStatus () {
 }
 
 runCorelightAtHome () {
-AARCH64=`uname -m`
-if [[ ! "$AARCH64" == "aarch64" ]] ; then
-    echo "### ------------------------------------------------------------------------------------------ ###" | colorize --red ;
-    echo "### This is not a 64 bit architecture.  Please load Raspberry Pi OS 64bit (do not use Lite)    ###" | colorize --red ;
-    echo "### ------------------------------------------------------------------------------------------ ###" | colorize --red ;
-    echo "[Press Enter]" | colorize; read DUMMY ;
-    exit 0
-fi
+    AARCH64=`uname -m`
+
+    if [[ ! "$AARCH64" == "aarch64" ]] ; then
+        echo "### ------------------------------------------------------------------------------------------ ###" | colorize --red ;
+        echo "### This is not a 64 bit architecture.  Please load Raspberry Pi OS 64bit (do not use Lite)    ###" | colorize --red ;
+        echo "### ------------------------------------------------------------------------------------------ ###" | colorize --red ;
+        echo "[Press Enter]" | colorize; read DUMMY ;
+        exit 0
+    fi
+
     # Test for old package repo, re-run setup to add new repo, then remove old repo
     if [ -f /etc/apt/sources.list.d/corelight-softsensor.list ]; then
         echo "[Removing old package repository]"
@@ -231,40 +229,40 @@ fi
 
 
 
-if ! [ -x $installPath/$corelightAtHome ]; then
-#   This cleans up v1.0.
-    if [ -x /usr/bin/raspi-corelight ]; then
-        sudo rm /usr/bin/raspi-corelight
+    if ! [ -x $installPath/$corelightAtHome ]; then
+        #   This cleans up v1.0.
+        if [ -x /usr/bin/raspi-corelight ]; then
+            sudo rm /usr/bin/raspi-corelight
+        fi
+
+        #  clone the c@h git repo
+        git --version 2>&1 >/dev/null ||
+        { echo >&2 "[Git is not installed. Installing..]";
+            sudo apt -y install git
+        }
+        if sudo git clone --depth 1 -b $gitBranch $gitRepo $installPath ; then
+            echo [Initial CorelightAtHome install...]
+            sudo chmod 755 $installPath/$corelightAtHome
+            sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
+            echo "[Installed Corelight@Home to $installPath ]"
+            echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
+        else
+            echo "[ERROR git clone for $corelightAtHome failed]" | colorize
+            pressEnter
+        fi
     fi
 
-#  clone the c@h git repo
-    git --version 2>&1 >/dev/null ||
-    { echo >&2 "[Git is not installed. Installing..]";
-        sudo apt -y install git
-    }
-    if sudo git clone --depth 1 -b $gitBranch $gitRepo $installPath ; then
-        echo [Initial CorelightAtHome install...]
-        sudo chmod 755 $installPath/$corelightAtHome
-        sudo ln -s $installPath/$corelightAtHome /usr/bin/$corelightAtHome
-        echo "[Installed Corelight@Home to $installPath ]"
-        echo "[Created symbolic link to /usr/bin/$corelightAtHome ]"
-    else
-        echo "[ERROR git clone for $corelightAtHome failed]" | colorize
-        pressEnter
-    fi
-fi
-
-# Launch menu if everything checks out
+    # Launch menu if everything checks out
     if [[ -x /usr/bin/$corelight ]] ; then
         mainMenu
-        elif [[ "$AARCH64" == "aarch64" ]] && [[ ! -x /usr/bin/$corelight ]] ; then
-                   echo "[Finishing Corelight@Home installation ]" | colorize --green
-                   setupRepo ;
-                   sudo apt -y install ntp
-                   installCorelight
-                   echo "[Launching Corelight@Home.  Run Quick Config (option 6) to finish initial configuration.]" | colorize --green
-                   pressEnter
-                   mainMenu
+    elif [[ "$AARCH64" == "aarch64" ]] && [[ ! -x /usr/bin/$corelight ]] ; then
+        echo "[Finishing Corelight@Home installation ]" | colorize --green
+        setupRepo ;
+        sudo apt -y install ntp
+        installCorelight
+        echo "[Launching Corelight@Home.  Run Quick Config (option 6) to finish initial configuration.]" | colorize --green
+        pressEnter
+        mainMenu
     else
         if [[ ! -x /usr/bin/$corelight ]] ; then
             echo "[Finishing Corelight@Home installation ]" | colorize --green
@@ -276,7 +274,6 @@ fi
             mainMenu
         fi
     fi
-
 }
 
 # function to update Corelight@Home
@@ -285,12 +282,12 @@ updateAtHome () {
 		echo "[Checking Corelight@Home github...]"
 		cd $installPath
 		if sudo git pull; then
-			    echo "[git update completed]"; sleep 5
-                /usr/bin/$corelightAtHome
-                exit 0
-          else
-			   echo "[ERROR during Corelight@Home update]" | colorize
-			   pressEnter
+            echo "[git update completed]"; sleep 5
+            /usr/bin/$corelightAtHome
+            exit 0
+        else
+            echo "[ERROR during Corelight@Home update]" | colorize
+            pressEnter
 		fi
 	else
 		echo [Initial CorelightAtHome install...]
@@ -304,11 +301,10 @@ updateAtHome () {
 	        pressEnter
 		fi
 	fi
-
 }
 
 wanIP () {
-host myip.opendns.com resolver1.opendns.com | grep "myip.opendns.com has" | awk '{print $4}'
+    host myip.opendns.com resolver1.opendns.com | grep "myip.opendns.com has" | awk '{print $4}'
 }
 
 licensed () {
@@ -329,6 +325,7 @@ sensorStatus () {
 # Restart Corelight Sensor
 sensorRestart () {
 	clear ; echo [Restarting Corelight...] ; sudo systemctl restart $corelight ; wait 4
+    sudo systemctl enable corelight-softsensor
 }
 
 # Stop Corelight Sensor
@@ -377,7 +374,6 @@ defineSniff () {
         echo "Cancelling Configuration Change"
         echo
     fi
-
 }
 
 installCorelight () {
@@ -388,6 +384,7 @@ installCorelight () {
 	   echo "[Copying sample Corelight SoftSensor config to $corelightCfg]";
 	   sudo cp /etc/corelight-softsensor.conf.example $corelightCfg;
 	fi
+    sudo systemctl enable corelight-softsensor
 }
 
 installLicense () {
@@ -401,8 +398,8 @@ installLicense () {
 		    sensorRestart
     	fi
 	else
-			echo "[Please enter Corelight License String]:" ; read license ;
-			echo $license | sudo tee $licenseFile ;
+        echo "[Please enter Corelight License String]:" ; read license ;
+        echo $license | sudo tee $licenseFile ;
 	fi
 }
 
@@ -447,13 +444,13 @@ denyEth0 () {
 }
 
 # Setup iDaptive authentication File
-idaptive () {
-    echo "machine pkgs.corelight.com/deb/stable" | sudo tee /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
-    read -p "[Please Enter iDaptive Username]:" REPO_USERNAME;
-    echo " login $REPO_USERNAME" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
-    read -p "[Please Enter iDaptive Password]:" REPO_PASSWORD;
-    echo " password $REPO_PASSWORD" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
-}
+#idaptive () {
+#    echo "machine pkgs.corelight.com/deb/stable" | sudo tee /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+#    read -p "[Please Enter iDaptive Username]:" REPO_USERNAME;
+#    echo " login $REPO_USERNAME" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+#    read -p "[Please Enter iDaptive Password]:" REPO_PASSWORD;
+#    echo " password $REPO_PASSWORD" | sudo tee -a /etc/apt/auth.conf.d/corelight-softsensor.conf 1> /dev/null;
+#}
 
 setupRepo () {
   clear ;
@@ -462,7 +459,7 @@ setupRepo () {
   sudo apt install debian-archive-keyring curl gnupg apt-transport-https -y
   # Download and run the Debian setup script for PackageCloud
   echo "[Downloading and executing PackageCloud setup script]";
-  curl -s https://packagecloud.io/install/repositories/corelight/stable/script.deb.sh | sudo bash
+  curl -s https://packages.corelight.com/install/repositories/corelight/stable/script.deb.sh | sudo bash
 
   # Commented out 2022-10-12 because repo is not authenticated yet
   # echo "[This requires your iDaptive Username and Password. ]";
@@ -482,27 +479,27 @@ setupRepo () {
 editCorelightCfg () {
 	sudo $editor $corelightCfg
 }
-setupHumio () {
-	humioEnabledStatus=`grep Corelight\:\:hec_enable $corelightCfg | awk '{print $2}'`
-	humioHecUrl=`grep Corelight\:\:hec_url $corelightCfg | awk '{print $2}'`
+setupLogScale () {
+	logScaleEnabledStatus=`grep Corelight\:\:hec_enable $corelightCfg | awk '{print $2}'`
+	logScaleHecUrl=`grep Corelight\:\:hec_url $corelightCfg | awk '{print $2}'`
 	echo "Current Config:";
-	echo "Export target is [$humioHecUrl]";
-	echo "Export enable is [$humioEnabledStatus]";
+	echo "Export target is [$logScaleHecUrl]";
+	echo "Export enable is [$logScaleEnabledStatus]";
 	echo "";
-    humioToken="" ;
-    humioHecUrl="";
-	echo "[Please enter Humio URL (Default=https://cloud.community.humio.com)]:" ;
-	echo "[Enter https://cloud.community.humio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read humioHecUrl ;
-	echo "[Please enter Humio API token]:" ; read humioToken ;
+    logScaleToken="" ;
+    logScaleHecUrl="";
+	echo "[Please enter Falcon LogScale URL (Default=https://cloud.community.humio.com)]:" ;
+	echo "[Enter https://cloud.community.humio.com or https://cloud.us.humio.com or https://cloud.humio.com]:" ; read logScaleHecUrl ;
+	echo "[Please enter Falcon LogScale API token]:" ; read logScaleToken ;
     echo ""
-    echo "New Export target is [${humioHecUrl:-https://cloud.community.humio.com/services/collector}]";
-    echo "New Export token is  [$humioToken]";
+    echo "New Export target is [${logScaleHecUrl:-https://cloud.community.humio.com/services/collector}]";
+    echo "New Export token is  [$logScaleToken]";
     echo "New Export enable is [T]";
     echo ""
     read -p "Accept Configuration (y/n): " acceptConfig
     if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-	    sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$humioToken|" "$corelightCfg";
-	    sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t${humioHecUrl:-https://cloud.community.humio.com}/services/collector|" "$corelightCfg";
+	    sudo sed -i -e "s|.*Corelight::hec_token.*|Corelight::hec_token\t\t$logScaleToken|" "$corelightCfg";
+	    sudo sed -i -e "s|.*Corelight::hec_url.*|Corelight::hec_url\t\t${logScaleHecUrl:-https://cloud.community.humio.com}/services/collector|" "$corelightCfg";
 	    sudo sed -i -e "s|.*Corelight::hec_enable.*|Corelight::hec_enable\t\tT|" "$corelightCfg";
 	    sudo sed -i -e "s|.*Corelight::hec_verify_cert.*|Corelight::hec_verify_cert\tT|" "$corelightCfg";
         sudo sed -i -e "s|.*Corelight::hec_sourcetype_prefix.*|Corelight::hec_sourcetype_prefix|" "$corelightCfg";
@@ -511,7 +508,7 @@ setupHumio () {
         echo
         echo "Cancelling Configuration Change"
         echo
-fi
+    fi
 }
 setupSplunk () {
 	splunkEnabledStatus=`grep Corelight\:\:hec_enable $corelightCfg | awk '{print $2}'`
@@ -557,12 +554,12 @@ quickConfig () {
 	echo "# This is a quick config walk-through and will restart    #"
 	echo "# the Corelight Sensor software. Completing this wizard   #"
 	echo "# should provide a running Corelight sensor with export   #"
-	echo "# to Humio Cloud or Splunk HEC:HTTP.                      #"
+	echo "# to Falcon LogScale Cloud or Splunk HEC:HTTP.            #"
 	echo "#                                                         #"
 	echo "# The following is required to complete setup:            #"
 	echo "#  -Monitor Interface (Probably eth0)                     #"
 	echo "#  -Valid Corelight License for Software Sensor           #"
-	echo "#  -if Humio Need:  API Ingest Token                      #"
+	echo "#  -if Falcon LogScale Need:  API Ingest Token            #"
 	echo "#  -if Splunk Need: splunk HEC URL & API Token            #"
 	echo "#                                                         #"
 	echo "###########################################################"
@@ -574,9 +571,9 @@ quickConfig () {
     setupRepo
 	enableSshd
 	ANSWER=""
-	echo "Configre Humio HEC Export? (y/n):" ; read ANSWER ;
+	echo "Configre Falcon LogScale HEC Export? (y/n):" ; read ANSWER ;
 	if [ $ANSWER = y ]; then
-        setupHumio
+        setupLogScale
 	else
 		ANSWER1=""
 		echo "Configure Splunk HEC Export? (y/n):" ; read ANSWER1 ;
@@ -599,118 +596,112 @@ quickConfig () {
 #}
 
 setDate () {
-
-echo
-echo "$selection" | colorize --underline
-echo
-
-read -p "Format YYYY-MM-DD: " myDate
-echo
-echo "Confirm Date:  $myDate"
-echo
-
-read -p "Accept Configuration (y/n): " acceptConfig
-
-if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-
-    sudo timedatectl set-time "$myDate"
-    echo "$selection complete."
     echo
-else
+    echo "$selection" | colorize --underline
     echo
-    echo "Cancelling Configuration Change"
+
+    read -p "Format YYYY-MM-DD: " myDate
     echo
-fi
+    echo "Confirm Date:  $myDate"
+    echo
+
+    read -p "Accept Configuration (y/n): " acceptConfig
+
+    if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
+        sudo timedatectl set-time "$myDate"
+        echo "$selection complete."
+        echo
+    else
+        echo
+        echo "Cancelling Configuration Change"
+        echo
+    fi
 }
 
 setTime () {
-
-echo
-echo "$selection" | colorize --underline
-echo
-
-read -p "Format HH:MM:SS (24 hour): " myTime
-echo
-echo "Confirm Time:  $myTime"
-echo
-
-read -p "Accept Configuration (y/n): " acceptConfig
-
-if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-
-    sudo timedatectl set-time "$myTime"
-    echo "$selection complete."
     echo
-else
+    echo "$selection" | colorize --underline
     echo
-    echo "Cancelling Configuration Change"
+
+    read -p "Format HH:MM:SS (24 hour): " myTime
     echo
-fi
+    echo "Confirm Time:  $myTime"
+    echo
+
+    read -p "Accept Configuration (y/n): " acceptConfig
+
+    if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
+        sudo timedatectl set-time "$myTime"
+        echo "$selection complete."
+        echo
+    else
+        echo
+        echo "Cancelling Configuration Change"
+        echo
+    fi
 }
 
 setTimezone () {
+    timezoneRegions=$(timedatectl list-timezones | cut -f 1 -d  "/" | sort -u)
+    timezoneStat=$(timedatectl | grep "Time zone:" | cut -f 2 -d ":")
 
-timezoneRegions=$(timedatectl list-timezones | cut -f 1 -d  "/" | sort -u)
-timezoneStat=$(timedatectl | grep "Time zone:" | cut -f 2 -d ":")
+    resizeTerm
 
-resizeTerm
+    echo
+    echo "$selection" | colorize --underline
+    echo
 
-echo
-echo "$selection" | colorize --underline
-echo
+    echo "Current Timezone: $timezoneStat"
+    echo
+    echo "Please select the Timezone Region:"
+    echo
 
-echo "Current Timezone: $timezoneStat"
-echo
-echo "Please select the Timezone Region:"
-echo
+    select myTimezoneRegion in "BACK" ${timezoneRegions[@]};
+    do
+        case "$myTimezoneRegion" in
+            "BACK")
+                break
+            ;;
+            *)
+                timezoneLocations=$(timedatectl list-timezones | grep "^$myTimezoneRegion")
+                echo
+                echo "Please Select the Timezone Location:"
+                echo
 
-select myTimezoneRegion in "BACK" ${timezoneRegions[@]};
-do
-    case "$myTimezoneRegion" in
-        "BACK")
-            break
-        ;;
-        *)
-            timezoneLocations=$(timedatectl list-timezones | grep "^$myTimezoneRegion")
-            echo
-            echo "Please Select the Timezone Location:"
-            echo
-
-            select myTimezoneLocation in "BACK" ${timezoneLocations[@]};
-            do
-                case "$myTimezoneLocation" in
-                    "BACK")
-                        break 2
-                    ;;
-                    *)
-                        echo
-                        echo "Timezone Selected:  $myTimezoneLocation"
-                        echo
-                        read -p "Accept Configuration (y/n): " acceptConfig
-
-                        if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-                            sudo timedatectl set-timezone "$myTimezoneLocation"
-
-                            echo "$selection complete."
-                            echo
+                select myTimezoneLocation in "BACK" ${timezoneLocations[@]};
+                do
+                    case "$myTimezoneLocation" in
+                        "BACK")
                             break 2
-                        else
+                        ;;
+                        *)
                             echo
-                            echo "Cancelling Configuration Change"
+                            echo "Timezone Selected:  $myTimezoneLocation"
                             echo
+                            read -p "Accept Configuration (y/n): " acceptConfig
 
-                            break 2
-                        fi
-                    ;;
-                esac
-            done
-        ;;
-    esac
-done
+                            if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
+                                sudo timedatectl set-timezone "$myTimezoneLocation"
+
+                                echo "$selection complete."
+                                echo
+                                break 2
+                            else
+                                echo
+                                echo "Cancelling Configuration Change"
+                                echo
+
+                                break 2
+                            fi
+                        ;;
+                    esac
+                done
+            ;;
+        esac
+    done
 }
 
 enableNtp () {
-
     echo
     echo "$selection" | colorize --underline
     echo
@@ -735,7 +726,6 @@ enableNtp () {
 }
 
 disableNtp () {
-
     echo
     echo "$selection" | colorize --underline
     echo
@@ -754,37 +744,35 @@ disableNtp () {
 }
 
 configureHostname () {
-
-echo
-echo "$selection" | colorize --underline
-echo
-
-currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " ")
-currentDomain=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f2- -d ".")
-
-echo "Current Hostname:  $currentHostname"
-echo "Current Domain:  $currentDomain"
-echo
-read -p "New Hostname: " newHostname
-read -p "New Domain:   " newDomain
-echo
-echo "Confirm new Hostname and Domain: $newHostname.$newDomain"
-
-read -p "Accept Configuration (y/n): " acceptConfig
-
-if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
-
-    sudo hostnamectl set-hostname "$newHostname.$newDomain"
-    currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " " | colorize --cyan)
-    PS3="[$currentHostname] Selection: "
-
-    echo "$selection complete."
     echo
-else
+    echo "$selection" | colorize --underline
     echo
-    echo "Cancelling Configuration Change"
+
+    currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " ")
+    currentDomain=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f2- -d ".")
+
+    echo "Current Hostname:  $currentHostname"
+    echo "Current Domain:  $currentDomain"
     echo
-fi
+    read -p "New Hostname: " newHostname
+    read -p "New Domain:   " newDomain
+    echo
+    echo "Confirm new Hostname and Domain: $newHostname.$newDomain"
+
+    read -p "Accept Configuration (y/n): " acceptConfig
+
+    if [[ "$acceptConfig" == "y" ]] || [[ "$acceptConfig" == "yes" ]]; then
+        sudo hostnamectl set-hostname "$newHostname.$newDomain"
+        currentHostname=$(hostnamectl | grep "Static hostname:" | cut -f2 -d ":" | cut -f1 -d "." | cut -f2 -d " " | colorize --cyan)
+        PS3="[$currentHostname] Selection: "
+
+        echo "$selection complete."
+        echo
+    else
+        echo
+        echo "Cancelling Configuration Change"
+        echo
+    fi
 }
 
 # Main Menu
@@ -813,25 +801,25 @@ mainMenu () {
                 menuDisplay
             ;;
        	    "Updates")
-	       updatesMenu
-	       menuDisplay
-	    ;;
-	    "Maintain")
-	       maintainMenu
-               menuDisplay
+	            updatesMenu
+	            menuDisplay
+	        ;;
+	        "Maintain")
+	            maintainMenu
+                menuDisplay
             ;;
             "Quick Config")
-               quickConfig
-               menuDisplay
+                quickConfig
+                menuDisplay
             ;;
             "Logout")
-               kill -HUP $PPID
+                kill -HUP $PPID
             ;;
             "Exit to shell")
-               echo
-               echo "Exiting to shell.  Run $0 to return to configuration"
-               echo
-               break
+                echo
+                echo "Exiting to shell.  Run $0 to return to configuration"
+                echo
+                break
             ;;
         esac
     done
@@ -849,24 +837,23 @@ accessMenu () {
     select selection in "BACK" "Enable SSHD" "Remove IP eth0"
     do
        	case "$selection" in
-           "Enable SSHD")
-	       enableSshd
-	       menuDisplay
-               ;;
-           "Remove IP eth0")
-	       denyEth0
-	       menuDisplay
-	       ;;
-           "BACK")
-               menuPath="Sensor"
-               break
-               ;;
+            "Enable SSHD")
+	            enableSshd
+	            menuDisplay
+            ;;
+            "Remove IP eth0")
+	            denyEth0
+	            menuDisplay
+	        ;;
+            "BACK")
+                menuPath="Sensor"
+                break
+            ;;
         esac
     done
 }
 
 dateAndTimeMenu () {
-
     menuPath="Sensor / System / Date and Time"
     echo
     echo "$menuPath" | colorize --reverse --cyan
@@ -904,7 +891,6 @@ dateAndTimeMenu () {
 }
 
 systemMenu () {
-
     menuPath="Sensor / System"
     echo
     echo "$menuPath" | colorize --reverse --cyan
@@ -913,10 +899,10 @@ systemMenu () {
     select selection in "BACK" "Show System INFO" "Date and Time" "Configure Hostname"
     do
         case "$selection" in
-	    "Show System INFO")
-		corelightStat ; pressEnter
-		menuDisplay
-	    ;;
+            "Show System INFO")
+                corelightStat ; pressEnter
+                menuDisplay
+            ;;
             "Date and Time")
                 dateAndTimeMenu
                 menuDisplay
@@ -940,16 +926,16 @@ exportMenu () {
     echo "$menuPath" | colorize --reverse --cyan
     echo
 
-    select selection in "BACK" "Humio HEC" "Splunk HEC"
+    select selection in "BACK" "Falcon LogScale HEC" "Splunk HEC"
     do
         case "$selection" in
-            "Humio HEC")
-                setupHumio
+            "Falcon LogScale HEC")
+                setupLogScale
                 menuDisplay
-             ;;
+            ;;
             "Splunk HEC")
                 setupSplunk
-		menuDisplay
+		        menuDisplay
             ;;
             "BACK")
                 menuPath="Sensor"
@@ -971,22 +957,22 @@ updatesMenu () {
     do
         case "$selection" in
             "Update Corelight")
-       		installCorelight ; pressEnter
- 		menuDisplay
- 	   ;;
- 	   "Update Corelight@Home Menu")
- 		updateAtHome
- 		menuDisplay
- 	   ;;
- 	   "Update System")
- 		clear ; sudo apt-get --assume-yes upgrade ; pressEnter
- 		menuDisplay
- 	   ;;
- 	   "BACK")
- 		menuPath="Sensor"
- 		break
- 	   ;;
- 	esac
+       		    installCorelight ; pressEnter
+ 		        menuDisplay
+ 	        ;;
+ 	        "Update Corelight@Home Menu")
+                updateAtHome
+                menuDisplay
+ 	        ;;
+            "Update System")
+                clear ; sudo apt-get --assume-yes upgrade ; pressEnter
+                menuDisplay
+            ;;
+            "BACK")
+                menuPath="Sensor"
+                break
+            ;;
+ 	    esac
     done
 }
 
@@ -1006,36 +992,36 @@ maintainMenu () {
             ;;
             "Stop Sensor")
                 sensorStop
-		menuDisplay
+		        menuDisplay
             ;;
-	    "Edit Corelight Config")
-		editCorelightCfg
-		menuDisplay
-	    ;;
+	        "Edit Corelight Config")
+                editCorelightCfg
+                menuDisplay
+            ;;
     	    "Define Monitor Interface")
-		defineSniff
-		menuDisplay
-	    ;;
+                defineSniff
+                menuDisplay
+	        ;;
             "Install License")
                 installLicense
-		menuDisplay
+		        menuDisplay
             ;;
     	    "Install Corelight")
-		installCorelight
-		menuDisplay
-	    ;;
+		        installCorelight
+		        menuDisplay
+	        ;;
     	    "Health Check")
-		healthCheck
-		menuDisplay
-	    ;;
-	    "Setup Corelight Installation Credentials")
-		setupRepo
-		menuDisplay
-	    ;;
+		        healthCheck
+		        menuDisplay
+	        ;;
+	        "Set Up Corelight Package Repository")
+		        setupRepo
+		        menuDisplay
+	        ;;
     	    "Interface Stats")
-		clear ; ifconfig -s | more ; pressEnter
-		menuDisplay
-	    ;;
+		        clear ; ifconfig -s | more ; pressEnter
+		        menuDisplay
+	        ;;
             "BACK")
                 menuPath="Sensor"
                 break
@@ -1047,4 +1033,3 @@ maintainMenu () {
 
 # start the menu
 runCorelightAtHome
-
